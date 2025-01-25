@@ -1,9 +1,15 @@
 const express = require('express');
 const router = express.Router();
+const apiService = require('../services/apiService');
 
-// Placeholder for claim extraction and deduplication logic
-router.get('/', (req, res) => {
-  res.send('Claim extraction and deduplication endpoint');
+router.get('/', async (req, res) => {
+  const { prompt } = req.query;
+  try {
+    const data = await apiService.fetchOpenAiData(prompt);
+    res.json(data);
+  } catch (error) {
+    res.status(500).send('Error fetching claim data');
+  }
 });
 
 module.exports = router;

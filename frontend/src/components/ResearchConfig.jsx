@@ -6,6 +6,7 @@ function ResearchConfig() {
     claimLimit: 10,
     journals: "",
     apiKey: "",
+    openAiApiKey: "",
   });
 
   const handleSubmit = (e) => {
@@ -20,7 +21,7 @@ function ResearchConfig() {
         Date Range:
         <input
           type="text"
-          className="border p-2 w-full"
+          className="border p-2 w-full text-gray-800"
           placeholder="e.g., 2023-01-01 to 2023-12-31"
           value={config.dateRange}
           onChange={(e) => setConfig({ ...config, dateRange: e.target.value })}
@@ -30,7 +31,7 @@ function ResearchConfig() {
         Claim Limit:
         <input
           type="number"
-          className="border p-2 w-full"
+          className="border p-2 w-full text-gray-800"
           value={config.claimLimit}
           onChange={(e) => setConfig({ ...config, claimLimit: e.target.value })}
         />
@@ -39,7 +40,7 @@ function ResearchConfig() {
         Journals:
         <input
           type="text"
-          className="border p-2 w-full"
+          className="border p-2 w-full text-gray-800"
           placeholder="Comma-separated journal names"
           value={config.journals}
           onChange={(e) => setConfig({ ...config, journals: e.target.value })}
@@ -49,9 +50,18 @@ function ResearchConfig() {
         API Key:
         <input
           type="text"
-          className="border p-2 w-full"
+          className="border p-2 w-full text-gray-800"
           value={config.apiKey}
           onChange={(e) => setConfig({ ...config, apiKey: e.target.value })}
+        />
+      </label>
+      <label className="block mb-2">
+        OpenAI API Key:
+        <input
+          type="text"
+          className="border p-2 w-full text-gray-800"
+          value={config.openAiApiKey}
+          onChange={(e) => setConfig({ ...config, openAiApiKey: e.target.value })}
         />
       </label>
       <button className="bg-blue-600 text-white px-4 py-2 rounded mt-4" type="submit">

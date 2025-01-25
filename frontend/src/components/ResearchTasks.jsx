@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import Navbar from "./Navbar";
 import { Link } from "react-router-dom";
 
 const ResearchTasks = () => {
@@ -9,10 +8,39 @@ const ResearchTasks = () => {
   const [includeRevenueAnalysis, setIncludeRevenueAnalysis] = useState(true);
   const [verifyWithJournals, setVerifyWithJournals] = useState(true);
   const [timeRange, setTimeRange] = useState("Last Month");
+  const [researchResults, setResearchResults] = useState(null);
+  const [error, setError] = useState(null);
 
-  const handleStartResearch = () => {
-    // Placeholder for the backend integration to start research tasks
-    console.log({ influencerName, claimsToAnalyze, selectedJournals, includeRevenueAnalysis, verifyWithJournals, timeRange });
+  const handleStartResearch = async () => {
+    const results = {
+      influencerName,
+      claimsToAnalyze,
+      selectedJournals,
+      includeRevenueAnalysis,
+      verifyWithJournals,
+      timeRange,
+    };
+    try {
+      const response = await fetch(`http://localhost:3000/api/verify?prompt=${JSON.stringify(results)}`);
+      const text = await response.text();
+      console.log('Response text:', text);
+      try {
+        const data = JSON.parse(text);
+        if (data.error && data.error.includes("quota")) {
+          setError("You have exceeded your current quota for the OpenAI API. Please check your plan and billing details.");
+        } else {
+          setResearchResults(data);
+          setError(null);
+        }
+      } catch (jsonError) {
+        console.error("Error parsing JSON:", jsonError);
+        console.error("Response text:", text);
+        setError("Failed to parse response from server.");
+      }
+    } catch (error) {
+      console.error("Error fetching research results:", error);
+      setError("Failed to fetch research results. Please try again later.");
+    }
   };
 
   return (
@@ -54,14 +82,14 @@ const ResearchTasks = () => {
             placeholder="Enter influencer name"
             value={influencerName}
             onChange={(e) => setInfluencerName(e.target.value)}
-            className="mb-4 w-full border border-gray-300 p-2 rounded-lg"
+            className="mb-4 w-full border border-gray-300 p-2 rounded-lg text-gray-800"
           />
           <input
             type="number"
             placeholder="Claims to analyze per influencer"
             value={claimsToAnalyze}
             onChange={(e) => setClaimsToAnalyze(parseInt(e.target.value) || 0)}
-            className="mb-4 w-full border border-gray-300 p-2 rounded-lg"
+            className="mb-4 w-full border border-gray-300 p-2 rounded-lg text-gray-800"
           />
           <div className="flex gap-4 items-center mb-4">
             <label className="flex items-center gap-2 text-gray-800">
@@ -87,6 +115,22 @@ const ResearchTasks = () => {
             Start Research
           </button>
         </div>
+        {error && (
+          <div className="bg-red-100 text-red-800 p-4 rounded-lg mt-4">
+            {error}
+          </div>
+        )}
+        {researchResults && (
+          <div className="bg-white shadow-md rounded-lg p-6 mt-6">
+            <h2 className="text-xl font-bold text-gray-800 mb-4">Research Results</h2>
+            <p><strong>Influencer Name:</strong> {researchResults.influencerName}</p>
+            <p><strong>Claims to Analyze:</strong> {researchResults.claimsToAnalyze}</p>
+            <p><strong>Selected Journals:</strong> {researchResults.selectedJournals ? researchResults.selectedJournals.join(", ") : "N/A"}</p>
+            <p><strong>Include Revenue Analysis:</strong> {researchResults.includeRevenueAnalysis ? "Yes" : "No"}</p>
+            <p><strong>Verify with Journals:</strong> {researchResults.verifyWithJournals ? "Yes" : "No"}</p>
+            <p><strong>Time Range:</strong> {researchResults.timeRange}</p>
+          </div>
+        )}
       </div>
     </div>
   );
