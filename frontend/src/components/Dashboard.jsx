@@ -6,8 +6,12 @@ function Dashboard() {
 
   useEffect(() => {
     async function fetchSummary() {
-      const response = await axios.get("/api/summary");
-      setSummary(response.data);
+      try {
+        const response = await axios.get("http://localhost:3000/api/summary");
+        setSummary(response.data);
+      } catch (error) {
+        console.error("Error fetching summary data:", error);
+      }
     }
     fetchSummary();
   }, []);
