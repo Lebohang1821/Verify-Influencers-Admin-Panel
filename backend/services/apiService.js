@@ -16,7 +16,7 @@ const apiService = {
           'Authorization': `Bearer ${process.env.OPENAI_API_KEY}`
         },
         body: JSON.stringify({
-          model: 'gpt-3.5-turbo',
+          model: 'gpt-3.5-turbo', // Specify the model (e.g., gpt-3.5-turbo)
           messages: [{ role: 'user', content: prompt }],
           max_tokens: 100
         })

@@ -18,32 +18,34 @@ function Dashboard() {
   }, []);
 
   return (
-    <div>
-      <h1 className="text-2xl font-bold mb-4">Dashboard</h1>
-      {summary ? (
-        <div className="grid grid-cols-3 gap-4">
-          <div className="p-4 bg-white shadow rounded-lg">
-            <h2 className="text-lg font-semibold">Total Influencers</h2>
-            <p className="text-3xl">{summary.totalInfluencers}</p>
+    <div className="bg-gray-100 min-h-screen p-6">
+      <div className="max-w-6xl mx-auto">
+        <h1 className="text-3xl font-bold mb-6 text-gray-900">Dashboard</h1>
+        {summary ? (
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div className="p-6 bg-white shadow-lg rounded-lg">
+              <h2 className="text-lg font-semibold text-gray-900">Total Influencers</h2>
+              <p className="text-4xl font-bold text-teal-500">{summary.totalInfluencers}</p>
+            </div>
+            <div className="p-6 bg-white shadow-lg rounded-lg">
+              <h2 className="text-lg font-semibold text-gray-900">Total Claims</h2>
+              <p className="text-4xl font-bold text-teal-500">{summary.totalClaims}</p>
+            </div>
+            <div className="p-6 bg-white shadow-lg rounded-lg">
+              <h2 className="text-lg font-semibold text-gray-900">Verified Claims</h2>
+              <p className="text-4xl font-bold text-teal-500">{summary.verifiedClaims}</p>
+            </div>
           </div>
-          <div className="p-4 bg-white shadow rounded-lg">
-            <h2 className="text-lg font-semibold">Total Claims</h2>
-            <p className="text-3xl">{summary.totalClaims}</p>
-          </div>
-          <div className="p-4 bg-white shadow rounded-lg">
-            <h2 className="text-lg font-semibold">Verified Claims</h2>
-            <p className="text-3xl">{summary.verifiedClaims}</p>
-          </div>
+        ) : (
+          <p className="text-gray-900">Loading...</p>
+        )}
+        <div className="mt-8">
+          <Link to="/research-tasks">
+            <button className="bg-teal-500 text-white px-6 py-3 rounded-lg hover:bg-teal-600 transition duration-300">
+              Research Tasks
+            </button>
+          </Link>
         </div>
-      ) : (
-        <p>Loading...</p>
-      )}
-      <div className="mt-6">
-        <Link to="/research-tasks">
-          <button className="bg-teal-400 text-white px-4 py-2 rounded-lg hover:bg-teal-500">
-            Research Tasks
-          </button>
-        </Link>
       </div>
     </div>
   );

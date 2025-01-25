@@ -20,59 +20,58 @@ const ResearchTasks = () => {
       verifyWithJournals,
       timeRange,
     };
+    console.log('Starting research with the following parameters:', results);
     try {
-      const response = await fetch(`http://localhost:3000/api/verify?prompt=${JSON.stringify(results)}`);
-      const text = await response.text();
-      console.log('Response text:', text);
-      try {
-        const data = JSON.parse(text);
-        if (data.error && data.error.includes("quota")) {
-          setError("You have exceeded your current quota for the OpenAI API. Please check your plan and billing details.");
-        } else {
-          setResearchResults(data);
-          setError(null);
-        }
-      } catch (jsonError) {
-        console.error("Error parsing JSON:", jsonError);
-        console.error("Response text:", text);
-        setError("Failed to parse response from server.");
+      const response = await fetch('http://localhost:3000/api/chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ prompt: JSON.stringify(results) }),
+      });
+      console.log('Response status:', response.status);
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || `HTTP error! Status: ${response.status}`);
       }
+      const data = await response.json();
+      console.log('Response from ChatGPT:', data.choices[0].message.content);
+      setResearchResults(data.choices[0].message.content);
+      setError(null);
     } catch (error) {
       console.error("Error fetching research results:", error);
-      setError("Failed to fetch research results. Please try again later.");
+      setError(error.message);
     }
   };
 
   return (
-    <div className="bg-gray-100 min-h-screen">
-      <div className="p-6 max-w-4xl mx-auto">
-        <Link to="/dashboard" className="text-teal-400 hover:underline">
+    <div className="bg-gray-100 min-h-screen p-6">
+      <div className="max-w-4xl mx-auto">
+        <Link to="/dashboard" className="text-teal-500 hover:underline">
           &larr; Back to Dashboard
         </Link>
-        <h1 className="text-2xl font-bold text-gray-800 mb-4">Research Tasks</h1>
-        <div className="bg-white shadow-md rounded-lg p-6">
-          <div className="grid grid-cols-2 gap-4 mb-4">
+        <h1 className="text-3xl font-bold text-gray-900 mb-6">Research Tasks</h1>
+        <div className="bg-white shadow-lg rounded-lg p-6">
+          <div className="grid grid-cols-2 gap-4 mb-6">
             <button
               onClick={() => setTimeRange("Last Week")}
-              className={`py-2 px-4 rounded-lg ${timeRange === "Last Week" ? "bg-teal-400 text-white" : "border border-gray-300 text-gray-800"}`}
+              className={`py-2 px-4 rounded-lg ${timeRange === "Last Week" ? "bg-teal-500 text-white" : "border border-gray-300 text-gray-800"}`}
             >
               Last Week
             </button>
             <button
               onClick={() => setTimeRange("Last Month")}
-              className={`py-2 px-4 rounded-lg ${timeRange === "Last Month" ? "bg-teal-400 text-white" : "border border-gray-300 text-gray-800"}`}
+              className={`py-2 px-4 rounded-lg ${timeRange === "Last Month" ? "bg-teal-500 text-white" : "border border-gray-300 text-gray-800"}`}
             >
               Last Month
             </button>
             <button
               onClick={() => setTimeRange("Last Year")}
-              className={`py-2 px-4 rounded-lg ${timeRange === "Last Year" ? "bg-teal-400 text-white" : "border border-gray-300 text-gray-800"}`}
+              className={`py-2 px-4 rounded-lg ${timeRange === "Last Year" ? "bg-teal-500 text-white" : "border border-gray-300 text-gray-800"}`}
             >
               Last Year
             </button>
             <button
               onClick={() => setTimeRange("All Time")}
-              className={`py-2 px-4 rounded-lg ${timeRange === "All Time" ? "bg-teal-400 text-white" : "border border-gray-300 text-gray-800"}`}
+              className={`py-2 px-4 rounded-lg ${timeRange === "All Time" ? "bg-teal-500 text-white" : "border border-gray-300 text-gray-800"}`}
             >
               All Time
             </button>
@@ -97,7 +96,7 @@ const ResearchTasks = () => {
                 type="checkbox"
                 checked={includeRevenueAnalysis}
                 onChange={() => setIncludeRevenueAnalysis(!includeRevenueAnalysis)}
-                className="form-checkbox text-teal-400"
+                className="form-checkbox text-teal-500"
               />
               Include Revenue Analysis
             </label>
@@ -106,12 +105,12 @@ const ResearchTasks = () => {
                 type="checkbox"
                 checked={verifyWithJournals}
                 onChange={() => setVerifyWithJournals(!verifyWithJournals)}
-                className="form-checkbox text-teal-400"
+                className="form-checkbox text-teal-500"
               />
               Verify with Scientific Journals
             </label>
           </div>
-          <button onClick={handleStartResearch} className="w-full bg-teal-400 text-white py-2 rounded-lg hover:bg-teal-500">
+          <button onClick={handleStartResearch} className="w-full bg-teal-500 text-white py-2 rounded-lg hover:bg-teal-600 transition duration-300">
             Start Research
           </button>
         </div>
@@ -121,14 +120,9 @@ const ResearchTasks = () => {
           </div>
         )}
         {researchResults && (
-          <div className="bg-white shadow-md rounded-lg p-6 mt-6">
-            <h2 className="text-xl font-bold text-gray-800 mb-4">Research Results</h2>
-            <p><strong>Influencer Name:</strong> {researchResults.influencerName}</p>
-            <p><strong>Claims to Analyze:</strong> {researchResults.claimsToAnalyze}</p>
-            <p><strong>Selected Journals:</strong> {researchResults.selectedJournals ? researchResults.selectedJournals.join(", ") : "N/A"}</p>
-            <p><strong>Include Revenue Analysis:</strong> {researchResults.includeRevenueAnalysis ? "Yes" : "No"}</p>
-            <p><strong>Verify with Journals:</strong> {researchResults.verifyWithJournals ? "Yes" : "No"}</p>
-            <p><strong>Time Range:</strong> {researchResults.timeRange}</p>
+          <div className="bg-white shadow-lg rounded-lg p-6 mt-6">
+            <h2 className="text-xl font-bold text-gray-900 mb-4">Research Results</h2>
+            <pre className="text-gray-800 whitespace-pre-wrap">{researchResults}</pre>
           </div>
         )}
       </div>

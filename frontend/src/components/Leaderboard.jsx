@@ -1,63 +1,66 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 
-function Leaderboard() {
+const Leaderboard = () => {
+  const [influencers, setInfluencers] = useState([]);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    const fetchInfluencers = async () => {
+      try {
+        const response = await fetch('http://localhost:3000/api/influencers');
+        if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+        const data = await response.json();
+        setInfluencers(data);
+      } catch (error) {
+        console.error("Error fetching influencers:", error);
+        setError("Failed to fetch influencers. Please try again later.");
+      }
+    };
+    fetchInfluencers();
+  }, []);
+
   return (
-    <div className="bg-gray-800 p-6 rounded-lg shadow-lg">
-      <h1 className="text-2xl font-bold mb-4">Influencer Trust Leaderboard</h1>
-
-      {/* Summary */}
-      <div className="grid grid-cols-3 gap-4 mb-6">
-        <div className="bg-gray-700 p-4 rounded-lg text-center">
-          <h2 className="text-lg font-bold">1,234</h2>
-          <p>Active Influencers</p>
-        </div>
-        <div className="bg-gray-700 p-4 rounded-lg text-center">
-          <h2 className="text-lg font-bold">25,431</h2>
-          <p>Claims Verified</p>
-        </div>
-        <div className="bg-gray-700 p-4 rounded-lg text-center">
-          <h2 className="text-lg font-bold">85.7%</h2>
-          <p>Average Trust Score</p>
-        </div>
+    <div className="bg-gray-100 min-h-screen p-6">
+      <div className="max-w-6xl mx-auto">
+        <h1 className="text-4xl font-bold text-gray-800 mb-8">Leaderboard</h1>
+        {error ? (
+          <div className="bg-red-100 text-red-800 p-4 rounded-lg">
+            {error}
+          </div>
+        ) : (
+          <div className="bg-white shadow-lg rounded-lg p-6">
+            <table className="min-w-full bg-white">
+              <thead>
+                <tr>
+                  <th className="py-3 px-4 text-left text-gray-600 font-semibold border-b">Influencer</th>
+                  <th className="py-3 px-4 text-left text-gray-600 font-semibold border-b">Followers</th>
+                  <th className="py-3 px-4 text-left text-gray-600 font-semibold border-b">Engagement</th>
+                  <th className="py-3 px-4 text-left text-gray-600 font-semibold border-b">Uploads</th>
+                </tr>
+              </thead>
+              <tbody>
+                {influencers.map((influencer, index) => (
+                  <tr key={index} className="hover:bg-gray-50">
+                    <td className="py-3 px-4 border-b">
+                      <Link to={`/influencer/${influencer.id}`} className="text-teal-500 hover:underline">
+                        {influencer.name}
+                      </Link>
+                    </td>
+                    <td className="py-3 px-4 text-gray-700 border-b">{influencer.followers.toLocaleString()}</td>
+                    <td className="py-3 px-4 text-gray-700 border-b">{influencer.engagement}%</td>
+                    <td className="py-3 px-4 text-gray-700 border-b">{influencer.uploads.toLocaleString()}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
       </div>
-
-      {/* Filters */}
-      <div className="flex space-x-2 mb-4">
-        <button className="bg-blue-600 p-3 rounded-lg">All</button>
-        <button className="bg-gray-600 p-3 rounded-lg">Nutrition</button>
-        <button className="bg-gray-600 p-3 rounded-lg">Fitness</button>
-        <button className="bg-gray-600 p-3 rounded-lg">Medicine</button>
-        <button className="bg-gray-600 p-3 rounded-lg">Mental Health</button>
-      </div>
-
-      {/* Table */}
-      <table className="table-auto w-full bg-gray-700 rounded-lg">
-        <thead>
-          <tr className="bg-gray-600">
-            <th className="p-3">Rank</th>
-            <th className="p-3">Influencer</th>
-            <th className="p-3">Category</th>
-            <th className="p-3">Trust Score</th>
-            <th className="p-3">Trend</th>
-            <th className="p-3">Followers</th>
-            <th className="p-3">Verified Claims</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td className="p-3">1</td>
-            <td className="p-3">Dr. Peter Attia</td>
-            <td className="p-3">Medicine</td>
-            <td className="p-3 text-green-500">94%</td>
-            <td className="p-3">↑</td>
-            <td className="p-3">1.2M+</td>
-            <td className="p-3">203</td>
-          </tr>
-          {/* Add more rows as needed */}
-        </tbody>
-      </table>
     </div>
   );
-}
+};
 
 export default Leaderboard;

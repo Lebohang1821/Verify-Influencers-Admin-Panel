@@ -1,14 +1,14 @@
 const express = require('express');
 const router = express.Router();
-const apiService = require('../services/apiService');
+const claimVerificationService = require('../services/claimVerificationService');
 
 router.get('/', async (req, res) => {
-  const { prompt } = req.query;
+  const { claims } = req.query;
   try {
-    const data = await apiService.fetchOpenAiData(prompt);
-    res.json(data);
+    const verifiedClaims = await claimVerificationService.verifyClaims(claims);
+    res.json(verifiedClaims);
   } catch (error) {
-    res.status(500).send('Error fetching claim data');
+    res.status(500).send('Error verifying claims');
   }
 });
 

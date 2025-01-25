@@ -20,6 +20,10 @@ app.use('/api/influencers', influencersRouter);
 app.use('/api/claims', claimsRouter);
 app.use('/api/verify', verifyRouter);
 
+// Add the chat route
+const chatRouter = require('./routes/chat');
+app.use('/api/chat', chatRouter);
+
 // Dummy route for summary data
 app.get('/api/summary', (req, res) => {
   res.json({
