@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import { Link } from "react-router-dom";
 
 function Dashboard() {
   const [summary, setSummary] = useState(null);
@@ -37,6 +38,13 @@ function Dashboard() {
       ) : (
         <p>Loading...</p>
       )}
+      <div className="mt-6">
+        <Link to="/research-tasks">
+          <button className="bg-teal-400 text-white px-4 py-2 rounded-lg hover:bg-teal-500">
+            Research Tasks
+          </button>
+        </Link>
+      </div>
     </div>
   );
 }

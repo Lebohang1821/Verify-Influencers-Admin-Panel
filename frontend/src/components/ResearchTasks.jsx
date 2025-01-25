@@ -1,156 +1,93 @@
-import React from "react";
+import React, { useState } from "react";
+import Navbar from "./Navbar";
+import { Link } from "react-router-dom";
 
 const ResearchTasks = () => {
+  const [influencerName, setInfluencerName] = useState("");
+  const [claimsToAnalyze, setClaimsToAnalyze] = useState(50);
+  const [selectedJournals, setSelectedJournals] = useState(["PubMed Central", "Nature"]);
+  const [includeRevenueAnalysis, setIncludeRevenueAnalysis] = useState(true);
+  const [verifyWithJournals, setVerifyWithJournals] = useState(true);
+  const [timeRange, setTimeRange] = useState("Last Month");
+
+  const handleStartResearch = () => {
+    // Placeholder for the backend integration to start research tasks
+    console.log({ influencerName, claimsToAnalyze, selectedJournals, includeRevenueAnalysis, verifyWithJournals, timeRange });
+  };
+
   return (
-    <div className="min-h-screen bg-darkBg text-darkText p-6">
-      {/* Header */}
-      <header className="mb-6">
-        <a href="/dashboard" className="text-darkAccent hover:underline">
+    <div className="bg-gray-100 min-h-screen">
+      <div className="p-6 max-w-4xl mx-auto">
+        <Link to="/dashboard" className="text-teal-400 hover:underline">
           &larr; Back to Dashboard
-        </a>
-        <h1 className="text-2xl font-bold mt-2">Research Tasks</h1>
-      </header>
-
-      {/* Form */}
-      <form className="bg-darkCard p-6 rounded-xl shadow-lg space-y-6">
-        {/* Tabs */}
-        <div className="flex items-center space-x-4">
-          <button
-            type="button"
-            className="flex-1 p-3 rounded-lg bg-darkAccent text-white text-center font-semibold"
-          >
-            Specific Influencer
-          </button>
-          <button
-            type="button"
-            className="flex-1 p-3 rounded-lg bg-darkCard text-darkText text-center border border-borderGray hover:bg-borderGray"
-          >
-            Discover New
-          </button>
-        </div>
-
-        {/* Time Range */}
-        <div>
-          <h2 className="text-lg font-medium">Time Range</h2>
-          <div className="flex items-center space-x-4 mt-2">
-            {["Last Week", "Last Month", "Last Year", "All Time"].map((label) => (
-              <button
-                key={label}
-                className={`flex-1 py-2 rounded-lg ${
-                  label === "Last Month"
-                    ? "bg-darkAccent text-white"
-                    : "bg-darkCard border border-borderGray text-darkText hover:bg-borderGray"
-                }`}
-              >
-                {label}
-              </button>
-            ))}
+        </Link>
+        <h1 className="text-2xl font-bold text-gray-800 mb-4">Research Tasks</h1>
+        <div className="bg-white shadow-md rounded-lg p-6">
+          <div className="grid grid-cols-2 gap-4 mb-4">
+            <button
+              onClick={() => setTimeRange("Last Week")}
+              className={`py-2 px-4 rounded-lg ${timeRange === "Last Week" ? "bg-teal-400 text-white" : "border border-gray-300 text-gray-800"}`}
+            >
+              Last Week
+            </button>
+            <button
+              onClick={() => setTimeRange("Last Month")}
+              className={`py-2 px-4 rounded-lg ${timeRange === "Last Month" ? "bg-teal-400 text-white" : "border border-gray-300 text-gray-800"}`}
+            >
+              Last Month
+            </button>
+            <button
+              onClick={() => setTimeRange("Last Year")}
+              className={`py-2 px-4 rounded-lg ${timeRange === "Last Year" ? "bg-teal-400 text-white" : "border border-gray-300 text-gray-800"}`}
+            >
+              Last Year
+            </button>
+            <button
+              onClick={() => setTimeRange("All Time")}
+              className={`py-2 px-4 rounded-lg ${timeRange === "All Time" ? "bg-teal-400 text-white" : "border border-gray-300 text-gray-800"}`}
+            >
+              All Time
+            </button>
           </div>
-        </div>
-
-        {/* Influencer Input */}
-        <div>
-          <label htmlFor="influencerName" className="block text-sm font-medium">
-            Influencer Name
-          </label>
           <input
             type="text"
-            id="influencerName"
             placeholder="Enter influencer name"
-            className="w-full mt-2 p-3 rounded-lg bg-darkBg border border-borderGray text-darkText"
+            value={influencerName}
+            onChange={(e) => setInfluencerName(e.target.value)}
+            className="mb-4 w-full border border-gray-300 p-2 rounded-lg"
           />
-        </div>
-
-        {/* Claims and Products */}
-        <div className="flex items-center space-x-4">
-          <div className="flex-1">
-            <label htmlFor="claims" className="block text-sm font-medium">
-              Claims to Analyze Per Influencer
-            </label>
-            <input
-              type="number"
-              id="claims"
-              placeholder="50"
-              className="w-full mt-2 p-3 rounded-lg bg-darkBg border border-borderGray text-darkText"
-            />
-          </div>
-          <div className="flex-1">
-            <label htmlFor="products" className="block text-sm font-medium">
-              Products to Find Per Influencer
-            </label>
-            <input
-              type="number"
-              id="products"
-              placeholder="10"
-              className="w-full mt-2 p-3 rounded-lg bg-darkBg border border-borderGray text-darkText"
-            />
-          </div>
-        </div>
-
-        {/* Toggles */}
-        <div className="flex items-center space-x-4">
-          <div className="flex items-center space-x-2">
-            <input type="checkbox" id="revenue" className="toggle-checkbox" />
-            <label htmlFor="revenue" className="text-sm">
+          <input
+            type="number"
+            placeholder="Claims to analyze per influencer"
+            value={claimsToAnalyze}
+            onChange={(e) => setClaimsToAnalyze(parseInt(e.target.value) || 0)}
+            className="mb-4 w-full border border-gray-300 p-2 rounded-lg"
+          />
+          <div className="flex gap-4 items-center mb-4">
+            <label className="flex items-center gap-2 text-gray-800">
+              <input
+                type="checkbox"
+                checked={includeRevenueAnalysis}
+                onChange={() => setIncludeRevenueAnalysis(!includeRevenueAnalysis)}
+                className="form-checkbox text-teal-400"
+              />
               Include Revenue Analysis
             </label>
-          </div>
-          <div className="flex items-center space-x-2">
-            <input type="checkbox" id="verify" className="toggle-checkbox" />
-            <label htmlFor="verify" className="text-sm">
+            <label className="flex items-center gap-2 text-gray-800">
+              <input
+                type="checkbox"
+                checked={verifyWithJournals}
+                onChange={() => setVerifyWithJournals(!verifyWithJournals)}
+                className="form-checkbox text-teal-400"
+              />
               Verify with Scientific Journals
             </label>
           </div>
-        </div>
-
-        {/* Journals */}
-        <div>
-          <h2 className="text-lg font-medium">Scientific Journals</h2>
-          <div className="grid grid-cols-2 gap-4 mt-2">
-            {[
-              "PubMed Central",
-              "Nature",
-              "Science",
-              "Cell",
-              "The Lancet",
-              "New England Journal of Medicine",
-              "JAMA Network",
-            ].map((journal) => (
-              <button
-                key={journal}
-                className="py-2 px-4 rounded-lg bg-darkCard border border-borderGray hover:bg-borderGray text-darkText text-left"
-              >
-                {journal}
-              </button>
-            ))}
-            <button className="py-2 px-4 rounded-lg bg-darkAccent text-white text-left">
-              + Add New Journal
-            </button>
-          </div>
-        </div>
-
-        {/* Notes */}
-        <div>
-          <label htmlFor="notes" className="block text-sm font-medium">
-            Notes for Research Assistant
-          </label>
-          <textarea
-            id="notes"
-            placeholder="Add any specific instructions or focus areas..."
-            className="w-full mt-2 p-3 rounded-lg bg-darkBg border border-borderGray text-darkText"
-          />
-        </div>
-
-        {/* Submit */}
-        <div className="text-right">
-          <button
-            type="submit"
-            className="px-6 py-3 bg-darkAccent text-white rounded-lg font-semibold hover:bg-indigo-700"
-          >
-            + Start Research
+          <button onClick={handleStartResearch} className="w-full bg-teal-400 text-white py-2 rounded-lg hover:bg-teal-500">
+            Start Research
           </button>
         </div>
-      </form>
+      </div>
     </div>
   );
 };
