@@ -33,22 +33,22 @@ function Dashboard() {
   }, []);
 
   return (
-    <div className="bg-gray-100 min-h-screen p-6">
+    <div className="bg-gray-100 min-h-screen p-4 sm:p-6">
       <div className="max-w-4xl mx-auto">
-        <h1 className="text-3xl font-bold mb-6 text-gray-900">Dashboard</h1>
+        <h1 className="text-2xl sm:text-3xl font-bold mb-4 sm:mb-6 text-gray-900">Dashboard</h1>
         {summary ? (
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div className="p-6 bg-white shadow-lg rounded-lg">
-              <h2 className="text-lg font-semibold text-gray-900">Total Influencers</h2>
-              <p className="text-4xl font-bold text-teal-500">{influencers.length}</p>
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 sm:gap-6">
+            <div className="p-4 sm:p-6 bg-white shadow-lg rounded-lg">
+              <h2 className="text-lg sm:text-xl font-semibold text-gray-900">Total Influencers</h2>
+              <p className="text-3xl sm:text-4xl font-bold text-teal-500">{influencers.length}</p>
             </div>
-            <div className="p-6 bg-white shadow-lg rounded-lg">
-              <h2 className="text-lg font-semibold text-gray-900">Total Claims</h2>
-              <p className="text-4xl font-bold text-teal-500">{summary.totalClaims}</p>
+            <div className="p-4 sm:p-6 bg-white shadow-lg rounded-lg">
+              <h2 className="text-lg sm:text-xl font-semibold text-gray-900">Total Claims</h2>
+              <p className="text-3xl sm:text-4xl font-bold text-teal-500">{summary.totalClaims}</p>
             </div>
-            <div className="p-6 bg-white shadow-lg rounded-lg">
-              <h2 className="text-lg font-semibold text-gray-900">Verified Claims</h2>
-              <p className="text-4xl font-bold text-teal-500">{summary.verifiedClaims}</p>
+            <div className="p-4 sm:p-6 bg-white shadow-lg rounded-lg">
+              <h2 className="text-lg sm:text-xl font-semibold text-gray-900">Verified Claims</h2>
+              <p className="text-3xl sm:text-4xl font-bold text-teal-500">{summary.verifiedClaims}</p>
             </div>
           </div>
         ) : (
@@ -59,14 +59,14 @@ function Dashboard() {
             {error}
           </div>
         )}
-        <div className="mt-8">
+        <div className="mt-6 sm:mt-8 flex flex-col sm:flex-row gap-4">
           <Link to="/leaderboard">
-            <button className="bg-teal-500 text-white px-6 py-3 rounded-lg hover:bg-teal-600 transition duration-300">
+            <button className="bg-teal-500 text-white px-4 sm:px-6 py-2 sm:py-3 rounded-lg hover:bg-teal-600 transition duration-300 w-full sm:w-auto">
               View Leaderboard
             </button>
           </Link>
-          <Link to="/research-tasks" className="ml-4">
-            <button className="bg-teal-500 text-white px-6 py-3 rounded-lg hover:bg-teal-600 transition duration-300">
+          <Link to="/research-tasks">
+            <button className="bg-teal-500 text-white px-4 sm:px-6 py-2 sm:py-3 rounded-lg hover:bg-teal-600 transition duration-300 w-full sm:w-auto">
               Research Tasks
             </button>
           </Link>
