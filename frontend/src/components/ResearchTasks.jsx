@@ -10,6 +10,7 @@ const ResearchTasks = () => {
   const [researchResults, setResearchResults] = useState(null);
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [tweets, setTweets] = useState([]);
 
   const handleStartResearch = async () => {
     if (!influencerName.trim()) {
@@ -48,6 +49,23 @@ const ResearchTasks = () => {
       setError(error.message);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleFetchTweets = async () => {
+    try {
+      const response = await fetch(`http://localhost:3000/api/twitter/tweets?query=${encodeURIComponent(influencerName)}`);
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || `Failed with status code ${response.status}`);
+      }
+      const data = await response.json();
+      console.log('Fetched tweets:', data);
+      setTweets(data);
+    } catch (error) {
+      console.error("Error fetching tweets:", error);
+      setError(error.message);
+      alert('Error fetching tweets: ' + error.message);
     }
   };
 
@@ -120,6 +138,9 @@ const ResearchTasks = () => {
             disabled={loading}
           >
             {loading ? "Loading..." : "Start Research"}
+          </button>
+          <button onClick={handleFetchTweets} className="w-full bg-teal-600 text-white py-2 rounded-lg hover:bg-teal-700 transition duration-300">
+            Fetch Tweets
           </button>
           {error && (
             <div className="bg-red-100 text-red-800 p-4 rounded-lg mt-4">

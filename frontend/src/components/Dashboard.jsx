@@ -4,6 +4,8 @@ import { Link } from "react-router-dom";
 
 function Dashboard() {
   const [summary, setSummary] = useState(null);
+  const [searchResults, setSearchResults] = useState([]);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     async function fetchSummary() {
@@ -12,9 +14,22 @@ function Dashboard() {
         setSummary(response.data);
       } catch (error) {
         console.error("Error fetching summary data:", error);
+        setError(error.message);
       }
     }
+
+    async function fetchSearchResults() {
+      try {
+        const response = await axios.get("http://localhost:3000/api/search-results");
+        setSearchResults(response.data);
+      } catch (error) {
+        console.error("Error fetching search results:", error);
+        setError(error.message);
+      }
+    }
+
     fetchSummary();
+    fetchSearchResults();
   }, []);
 
   return (
@@ -39,6 +54,32 @@ function Dashboard() {
         ) : (
           <p className="text-gray-900">Loading...</p>
         )}
+        {error && (
+          <div className="bg-red-100 text-red-800 p-4 rounded-lg mb-4">
+            {error}
+          </div>
+        )}
+        <div className="bg-white shadow-lg rounded-lg p-6 mt-8">
+          <h2 className="text-xl font-bold text-gray-900 mb-4">Search Results</h2>
+          <ul>
+            {searchResults.map((result) => (
+              <li key={result._id} className="mb-4">
+                <div className="flex items-center mb-2">
+                  <img src={result.profilePicture} alt={result.influencerName} className="w-12 h-12 rounded-full mr-4" />
+                  <div>
+                    <h3 className="text-lg font-bold text-gray-900">{result.influencerName}</h3>
+                    <p className="text-gray-700">Followers: {result.followersCount}</p>
+                  </div>
+                </div>
+                <p className="text-gray-700">Claims to Analyze: {result.claimsToAnalyze}</p>
+                <p className="text-gray-700">Time Range: {result.timeRange}</p>
+                <p className="text-gray-700">Include Revenue Analysis: {result.includeRevenueAnalysis ? 'Yes' : 'No'}</p>
+                <p className="text-gray-700">Verify with Journals: {result.verifyWithJournals ? 'Yes' : 'No'}</p>
+                <pre className="bg-gray-100 p-2 rounded-lg text-gray-700">{JSON.stringify(result.results, null, 2)}</pre>
+              </li>
+            ))}
+          </ul>
+        </div>
         <div className="mt-8">
           <Link to="/research-tasks">
             <button className="bg-teal-500 text-white px-6 py-3 rounded-lg hover:bg-teal-600 transition duration-300">

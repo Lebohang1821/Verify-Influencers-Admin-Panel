@@ -22,7 +22,8 @@ router.get('/', async (req, res) => {
       selectedJournals: data.selectedJournals,
       includeRevenueAnalysis: data.includeRevenueAnalysis,
       verifyWithJournals: data.verifyWithJournals,
-      timeRange: data.timeRange
+      timeRange: data.timeRange,
+      results: data
     });
     console.log('SearchResult to be saved:', searchResult);
     await searchResult.save();

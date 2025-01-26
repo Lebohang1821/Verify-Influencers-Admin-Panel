@@ -16,6 +16,7 @@ function App() {
         <main className="container mx-auto py-6 px-4">
           <Switch>
             <Route path="/" exact component={Dashboard} />
+            <Route path="/dashboard" component={Dashboard} />
             <Route path="/leaderboard" component={Leaderboard} />
             <Route path="/influencer/:id" component={InfluencerDetails} />
             <Route path="/research-config" component={ResearchConfig} />

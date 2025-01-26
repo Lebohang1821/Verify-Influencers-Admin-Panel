@@ -5,7 +5,12 @@ const mongoose = require("mongoose");
 const app = express();
 const port = 3000;
 
-app.use(cors());
+app.use(cors({
+  origin: 'http://localhost:3001', // Adjust this to match your frontend URL
+  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  allowedHeaders: ['Content-Type', 'Authorization']
+}));
+
 app.use(express.json());
 
 mongoose
@@ -24,6 +29,14 @@ app.use("/api/verify", verifyRouter);
 // Add the chat route
 const chatRouter = require("./routes/chat");
 app.use("/api/chat", chatRouter);
+
+// Add the Twitter route
+const twitterRouter = require('./routes/twitter');
+app.use('/api/twitter', twitterRouter);
+
+// Add the search results route
+const searchResultsRouter = require('./routes/searchResults');
+app.use('/api/search-results', searchResultsRouter);
 
 // Dummy route for summary data
 app.get("/api/summary", (req, res) => {
