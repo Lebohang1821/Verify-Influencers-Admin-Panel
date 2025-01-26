@@ -137,9 +137,9 @@ const ResearchTasks = () => {
             <h3 className="text-2xl font-semibold mb-4 text-gray-900">Research Configuration</h3>
             <div className="grid grid-cols-2 gap-4 mb-6">
               <button
-                className={`px-4 py-6 rounded-lg font-medium transition-all ${
+                className={`px-4 py-6 rounded-lg font-medium transition-all border border-gray-300 ${
                   researchConfig === "Specific Influencer"
-                    ? "border border-green-600 text-green-600 bg-opacity-25"
+                    ? "border-green-600 text-green-600 bg-opacity-25"
                     : "text-gray-800 hover:bg-gray-200"
                 }`}
                 onClick={() => setResearchConfig("Specific Influencer")}
@@ -147,9 +147,9 @@ const ResearchTasks = () => {
                 Specific Influencer
               </button>
               <button
-                className={`px-4 py-6 rounded-lg font-medium transition-all ${
+                className={`px-4 py-6 rounded-lg font-medium transition-all border border-gray-300 ${
                   researchConfig === "Discover New"
-                    ? "border border-green-600 text-green-600 bg-opacity-25"
+                    ? "border-green-600 text-green-600 bg-opacity-25"
                     : "text-gray-800 hover:bg-gray-200"
                 }`}
                 onClick={() => setResearchConfig("Discover New")}
