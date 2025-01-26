@@ -7,14 +7,14 @@ router.get('/', async (req, res) => {
   const { prompt } = req.query;
   try {
     console.log('Received prompt:', prompt);
-    const data = await apiService.fetchOpenAiData(prompt);
-    console.log('OpenAI response data:', data);
+    const data = await apiService.fetchGeminiData(prompt);
+    console.log('Gemini response data:', data);
     if (data.error) {
-      console.error('OpenAI error:', data.error.message);
+      console.error('Gemini error:', data.error.message);
       throw new Error(data.error.message);
     }
     if (!data.choices || data.choices.length === 0) {
-      throw new Error('No choices returned from OpenAI API');
+      throw new Error('No choices returned from Gemini API');
     }
     const searchResult = new SearchResult({
       influencerName: data.choices[0].message.content.trim(), // Adjust this based on the actual response structure

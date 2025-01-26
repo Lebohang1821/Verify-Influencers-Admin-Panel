@@ -7,7 +7,7 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
+const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
 
 app.use((req, res, next) => {
   res.setHeader("Content-Security-Policy", "default-src 'self'; img-src 'self' data:; script-src 'self'; style-src 'self' 'unsafe-inline'");
@@ -20,24 +20,24 @@ app.post('/api/chat', async (req, res) => {
 
     try {
         const response = await axios.post(
-            'https://api.openai.com/v1/chat/completions',
+            'https://api.gemini.com/v1/chat/completions',
             {
-                model: 'gpt-4', // Specify the model (e.g., gpt-3.5-turbo or gpt-4)
+                model: 'gemini-1.0', // Specify the model (e.g., gemini-1.0)
                 messages: [{ role: 'user', content: prompt }],
             },
             {
                 headers: {
                     'Content-Type': 'application/json',
-                    Authorization: `Bearer ${OPENAI_API_KEY}`,
+                    Authorization: `Bearer ${GEMINI_API_KEY}`,
                 },
             }
         );
 
-        console.log('OpenAI API response:', response.data);
+        console.log('Gemini API response:', response.data);
         res.json(response.data);
     } catch (error) {
-        console.error('Error communicating with OpenAI:', error.response.data);
-        res.status(500).send('Error communicating with OpenAI');
+        console.error('Error communicating with Gemini:', error.response ? error.response.data : error.message);
+        res.status(500).json({ error: error.response ? error.response.data : error.message });
     }
 });
 
