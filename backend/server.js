@@ -7,10 +7,10 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
+const PERPLEXITY_API_KEY = process.env.PERPLEXITY_API_KEY;
 
 app.use((req, res, next) => {
-  res.setHeader("Content-Security-Policy", "default-src 'self'; img-src 'self' data:; script-src 'self'; style-src 'self' 'unsafe-inline'");
+  res.setHeader("Content-Security-Policy", "default-src 'self'; img-src 'self' data: http://localhost:3000/favicon.ico; script-src 'self'; style-src 'self' 'unsafe-inline'");
   next();
 });
 
@@ -20,27 +20,27 @@ app.post('/api/chat', async (req, res) => {
 
     try {
         const response = await axios.post(
-            'https://api.gemini.com/v1/chat/completions',
+            'https://api.perplexity.ai/v1/chat/completions',
             {
-                model: 'gemini-1.0', // Specify the model (e.g., gemini-1.0)
+                model: 'perplexity-1.0', // Specify the model (e.g., perplexity-1.0)
                 messages: [{ role: 'user', content: prompt }],
             },
             {
                 headers: {
                     'Content-Type': 'application/json',
-                    Authorization: `Bearer ${GEMINI_API_KEY}`,
+                    Authorization: `Bearer ${PERPLEXITY_API_KEY}`,
                 },
             }
         );
 
-        console.log('Gemini API response:', response.data);
+        console.log('Perplexity API response:', response.data);
         res.json(response.data);
     } catch (error) {
-        console.error('Error communicating with Gemini:', error.response ? error.response.data : error.message);
+        console.error('Error communicating with Perplexity:', error.response ? error.response.data : error.message);
         res.status(500).json({ error: error.response ? error.response.data : error.message });
     }
 });
 
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
 
