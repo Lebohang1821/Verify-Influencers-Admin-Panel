@@ -27,12 +27,15 @@ router.post("/", async (req, res) => {
   const { influencerName, claimsToAnalyze, timeRange, includeRevenueAnalysis, verifyWithJournals, scientificJournals } = req.body;
   console.log("Received request:", req.body);
 
-  const prompt = `Estimate the total number of followers, category, trust score, and trend for the influencer "${influencerName}" and analyze the following parameters:
-  - Claims to analyze: ${claimsToAnalyze}
-  - Time range: ${timeRange}
-  - Include revenue analysis: ${includeRevenueAnalysis}
-  - Verify with journals: ${verifyWithJournals}
-  - Scientific journals: ${Object.keys(scientificJournals).filter(journal => scientificJournals[journal]).join(", ")}`;
+  const prompt = `Provide a detailed analysis for the influencer "${influencerName}" including the following information:
+  1. Total number of followers with a breakdown by platform.
+  2. Category of the influencer.
+  3. Trust score of the influencer.
+  4. Current trend of the influencer.
+  5. Analysis of ${claimsToAnalyze} claims made by the influencer.
+  6. Time range: ${timeRange}.
+  7. Include revenue analysis: ${includeRevenueAnalysis}.
+  8. Verify claims with the following journals: ${Object.keys(scientificJournals).filter(journal => scientificJournals[journal]).join(", ")}.`;
 
   try {
     const response = await axios.post(
