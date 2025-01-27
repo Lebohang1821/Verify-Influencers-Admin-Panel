@@ -11,7 +11,6 @@ const ResearchTasks = () => {
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
   const [tweets, setTweets] = useState([]);
-  const [productsToFind, setProductsToFind] = useState(10);
   const [scientificJournals, setScientificJournals] = useState({
     pubmed: true,
     nature: true,
@@ -37,7 +36,7 @@ const ResearchTasks = () => {
 
   const fetchNewInfluencers = async () => {
     try {
-      const response = await fetch("http://localhost:3000/api/influencers/new");
+      const response = await fetch("http://localhost:5000/api/influencers/new");
       const data = await response.json();
       setNewInfluencers(data.influencers || []);
     } catch (error) {
@@ -95,12 +94,11 @@ const ResearchTasks = () => {
       timeRange,
       includeRevenueAnalysis,
       verifyWithJournals,
-      productsToFind,
       scientificJournals,
     };
 
     try {
-      const response = await fetch("http://localhost:3000/api/chat", {
+      const response = await fetch("http://localhost:5000/api/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(requestData),
@@ -114,7 +112,7 @@ const ResearchTasks = () => {
       }
 
       const data = await response.json();
-      setResearchResults(data.results || "No results available.");
+      setResearchResults(data);
     } catch (error) {
       setError(error.message);
     } finally {
@@ -329,7 +327,7 @@ const ResearchTasks = () => {
                 Research Results
               </h2>
               <pre className="text-gray-800 whitespace-pre-wrap">
-                {researchResults}
+                {JSON.stringify(researchResults, null, 2)}
               </pre>
             </div>
           )}
