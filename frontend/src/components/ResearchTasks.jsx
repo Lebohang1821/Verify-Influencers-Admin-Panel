@@ -326,9 +326,18 @@ const ResearchTasks = () => {
               <h2 className="text-xl font-bold text-gray-900 mb-4">
                 Research Results
               </h2>
-              <pre className="text-gray-800 whitespace-pre-wrap">
-                {JSON.stringify(researchResults, null, 2)}
-              </pre>
+              <div className="text-gray-800 whitespace-pre-wrap">
+                <p><strong>Influencer Name:</strong> {researchResults.influencerName}</p>
+                <p><strong>Category:</strong> {researchResults.category}</p>
+                <p><strong>Trust Score:</strong> {researchResults.trustScore}</p>
+                <p><strong>Trend:</strong> {researchResults.trend}</p>
+                <p><strong>Estimated Followers:</strong> {researchResults.estimatedFollowers}</p>
+                <p><strong>Claims to Analyze:</strong> {researchResults.claimsToAnalyze}</p>
+                <p><strong>Time Range:</strong> {researchResults.timeRange}</p>
+                <p><strong>Include Revenue Analysis:</strong> {researchResults.includeRevenueAnalysis ? 'Yes' : 'No'}</p>
+                <p><strong>Verify with Journals:</strong> {researchResults.verifyWithJournals ? 'Yes' : 'No'}</p>
+                <p><strong>Scientific Journals:</strong> {Object.keys(researchResults.scientificJournals).filter(journal => researchResults.scientificJournals[journal]).join(", ")}</p>
+              </div>
             </div>
           )}
         </div>
