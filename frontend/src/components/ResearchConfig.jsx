@@ -3,10 +3,11 @@ import React, { useState } from "react";
 function ResearchConfig() {
   const [config, setConfig] = useState({
     dateRange: "",
-    claimLimit: 10,
+    claimLimit: "",
     journals: "",
     apiKey: "",
     openAiApiKey: "",
+    perplexityApiKey: "", // Added Perplexity API Key
   });
 
   const handleSubmit = (e) => {
@@ -74,6 +75,17 @@ function ResearchConfig() {
               value={config.openAiApiKey}
               onChange={(e) =>
                 setConfig({ ...config, openAiApiKey: e.target.value })
+              }
+            />
+          </label>
+          <label className="block mb-4">
+            Perplexity API Key: {/* Added Perplexity API Key input */}
+            <input
+              type="text"
+              className="border p-2 w-full text-gray-800 rounded-lg"
+              value={config.perplexityApiKey}
+              onChange={(e) =>
+                setConfig({ ...config, perplexityApiKey: e.target.value })
               }
             />
           </label>
