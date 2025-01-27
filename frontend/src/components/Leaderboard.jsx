@@ -11,7 +11,7 @@ const Leaderboard = () => {
   useEffect(() => {
     const fetchInfluencers = async () => {
       try {
-        const response = await fetch("http://localhost:3000/api/influencers");
+        const response = await fetch("http://localhost:5000/api/influencers");
         if (!response.ok) {
           throw new Error(`HTTP error! Status: ${response.status}`);
         }
@@ -25,7 +25,7 @@ const Leaderboard = () => {
 
     const fetchSummary = async () => {
       try {
-        const response = await fetch("http://localhost:3000/api/summary");
+        const response = await fetch("http://localhost:5000/api/summary");
         if (!response.ok) {
           throw new Error(`HTTP error! Status: ${response.status}`);
         }
