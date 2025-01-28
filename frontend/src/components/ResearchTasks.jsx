@@ -4,31 +4,33 @@ import { FaSpinner } from "react-icons/fa";
 
 const ResearchTasks = () => {
   const [influencerName, setInfluencerName] = useState("");
-  const [claimsToAnalyze, setClaimsToAnalyze] = useState(50);
-  const [timeRange, setTimeRange] = useState("Last Month");
-  const [includeRevenueAnalysis, setIncludeRevenueAnalysis] = useState(true);
-  const [verifyWithJournals, setVerifyWithJournals] = useState(true);
+  const [claimsToAnalyze, setClaimsToAnalyze] = useState("");
+  const [timeRange, setTimeRange] = useState("");
+  const [includeRevenueAnalysis, setIncludeRevenueAnalysis] = useState(false);
+  const [verifyWithJournals, setVerifyWithJournals] = useState(false);
   const [researchResults, setResearchResults] = useState(null);
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
   const [tweets, setTweets] = useState([]);
   const [scientificJournals, setScientificJournals] = useState({
-    "Pubmed Central": true,
-    "Nature": true,
-    "Science": true,
-    "Cell": true,
-    "The Lancet": true,
-    "New England Journal Of Medicine": true,
-    "Jama Network": true,
+    "Pubmed Central": false,
+    "Nature": false,
+    "Science": false,
+    "Cell": false,
+    "The Lancet": false,
+    "New England Journal Of Medicine": false,
+    "Jama Network": false,
   });
   const [newJournal, setNewJournal] = useState("");
   const [showAddSection, setShowAddSection] = useState(false);
-  const [researchConfig, setResearchConfig] = useState("Specific Influencer");
+  const [researchConfig, setResearchConfig] = useState("");
   const [newInfluencers, setNewInfluencers] = useState([]);
 
   useEffect(() => {
     if (researchConfig === "Discover New") {
-      fetchNewInfluencers();
+      setIncludeRevenueAnalysis(false);
+      setVerifyWithJournals(false);
+      setTimeRange("");
     } else {
       setInfluencerName("");
       setNewInfluencers([]);
@@ -36,12 +38,19 @@ const ResearchTasks = () => {
   }, [researchConfig]);
 
   const fetchNewInfluencers = async () => {
+    setLoading(true);
     try {
-      const response = await fetch("http://localhost:5000/api/influencers/new");
+      const response = await fetch("http://localhost:5000/api/chat/new-influencers", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+      });
       const data = await response.json();
       setNewInfluencers(data.influencers || []);
     } catch (error) {
       console.error("Error fetching new influencers:", error.message);
+      setError("Failed to fetch new influencers. Please try again later.");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -157,49 +166,45 @@ const ResearchTasks = () => {
               </button>
             </div>
           </div>
-          <div className="grid grid-cols-2 gap-4 mb-4">
-            {["Last Week", "Last Month", "Last Year", "All Time"].map(
-              (range) => (
-                <button
-                  key={range}
-                  onClick={() => setTimeRange(range)}
-                  className={`py-2 px-4 rounded-lg ${
-                    timeRange === range
-                      ? "border border-green-600 text-green-600 bg-opacity-25"
-                      : "border border-gray-300 text-gray-800 hover:bg-gray-200"
-                  }`}
-                >
-                  {range}
-                </button>
-              )
-            )}
-          </div>
           {researchConfig === "Specific Influencer" && (
-            <input
-              type="text"
-              placeholder="Enter influencer name"
-              value={influencerName}
-              onChange={(e) => setInfluencerName(e.target.value)}
-              className="w-full mb-4 border border-gray-300 p-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500 text-black"
-            />
-          )}
-          {researchConfig === "Discover New" && (
-            <div className="mb-4">
-              <h4 className="text-lg font-semibold text-gray-900 mb-2">New Influencers</h4>
-              <ul className="list-disc list-inside">
-                {newInfluencers.map((influencer, index) => (
-                  <li key={index} className="text-gray-800">{influencer}</li>
-                ))}
-              </ul>
+            <div>
+              <div className="grid grid-cols-2 gap-4 mb-4">
+                {["Last Week", "Last Month", "Last Year", "All Time"].map(
+                  (range) => (
+                    <button
+                      key={range}
+                      onClick={() => setTimeRange(range)}
+                      className={`py-2 px-4 rounded-lg ${
+                        timeRange === range
+                          ? "border border-green-600 text-green-600 bg-opacity-25"
+                          : "border border-gray-300 text-gray-800 hover:bg-gray-200"
+                      }`}
+                    >
+                      {range}
+                    </button>
+                  )
+                )}
+              </div>
+              <input
+                type="text"
+                placeholder="Enter influencer name"
+                value={influencerName}
+                onChange={(e) => setInfluencerName(e.target.value)}
+                className="w-full mb-4 border border-gray-300 p-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500 text-black"
+              />
+              <label className="block mb-4">
+                Number of Claims to Analyze:
+                <input
+                  type="number"
+                  placeholder="Claims to analyze"
+                  value={claimsToAnalyze}
+                  onChange={(e) => setClaimsToAnalyze(Math.min(Number(e.target.value) || 1, 50))}
+                  className="w-full border border-gray-300 p-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500 text-black"
+                  max="50"
+                />
+              </label>
             </div>
           )}
-          <input
-            type="number"
-            placeholder="Claims to analyze"
-            value={claimsToAnalyze}
-            onChange={(e) => setClaimsToAnalyze(Number(e.target.value) ||1)}
-            className="w-full mb-4 border border-gray-300 p-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500 text-black"
-          />
           <div className="flex flex-col gap-4 items-end">
             <label className="inline-flex items-center justify-between w-full text-black">
               <span className="ml-2">Include Revenue Analysis</span>
@@ -308,15 +313,35 @@ const ResearchTasks = () => {
               </div>
             </div>
           )}
-          <div className="flex justify-end mt-6">
-            <button
-              onClick={handleStartResearch}
-              className="bg-teal-600 text-white py-2 px-4 rounded-lg hover:bg-teal-700 transition duration-300"
-              disabled={loading}
-            >
-              {loading ? <FaSpinner className="animate-spin" /> : "+ Start Research"}
-            </button>
-          </div>
+          {researchConfig === "Specific Influencer" && (
+            <div className="flex justify-end mt-6">
+              <button
+                onClick={handleStartResearch}
+                className="bg-teal-600 text-white py-2 px-4 rounded-lg hover:bg-teal-700 transition duration-300"
+                disabled={loading}
+              >
+                {loading ? <FaSpinner className="animate-spin" /> : "+ Start Research"}
+              </button>
+            </div>
+          )}
+          {researchConfig === "Discover New" && (
+            <div className="mt-6">
+              <h4 className="text-lg font-semibold text-gray-900 mb-2">New Influencers</h4>
+              <div className="flex justify-end">
+                <button
+                  className="bg-teal-600 text-white py-2 px-4 rounded-lg hover:bg-teal-700 transition duration-300 mb-4"
+                  onClick={fetchNewInfluencers}
+                >
+                  Discover
+                </button>
+                </div>
+              <ul className="list-disc list-inside">
+                {newInfluencers.map((influencer, index) => (
+                  <li key={index} className="text-gray-800">{influencer}</li>
+                ))}
+              </ul>
+            </div>
+          )}
           {loading && (
             <div className="fixed inset-0 bg-gray-800 bg-opacity-75 flex items-center justify-center z-50">
               <div className="bg-white bg-opacity-90 p-6 rounded-lg shadow-lg flex flex-col items-center">
@@ -340,7 +365,7 @@ const ResearchTasks = () => {
                 <p><strong>Category:</strong> {researchResults.category}</p>
                 <p><strong>Trust Score:</strong> {researchResults.trustScore}</p>
                 <p><strong>Trend:</strong> {researchResults.trend}</p>
-                <p><strong>IG Followers:</strong> {researchResults.estimatedFollowers}</p>
+                <p><strong>Estimated Followers:</strong> {researchResults.estimatedFollowers}</p>
                 <p><strong>Claims to Analyze:</strong> {researchResults.claimsToAnalyze}</p>
                 <p><strong>Time Range:</strong> {researchResults.timeRange}</p>
                 <p><strong>Include Revenue Analysis:</strong> {researchResults.includeRevenueAnalysis ? 'Yes' : 'No'}</p>
