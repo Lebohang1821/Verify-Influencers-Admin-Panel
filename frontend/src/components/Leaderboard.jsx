@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import { Users, CheckCircle, TrendingUp } from "lucide-react"; // Import icons
 
 const Leaderboard = () => {
   const [influencers, setInfluencers] = useState([]);
@@ -60,36 +61,39 @@ const Leaderboard = () => {
     : 0;
 
   return (
-    <div className="bg-gray-100 min-h-screen p-6">
+    <div className="bg-gray-100 min-h-screen p-4 sm:p-6">
       <div className="max-w-4xl mx-auto">
-        <h1 className="text-3xl font-bold text-gray-900 mb-6">Influencer Trust Leaderboard</h1>
-        <p className="text-gray-600 text-sm sm:text-base mb-6 leading-relaxed">
+        <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-4 sm:mb-6">Influencer Trust Leaderboard</h1>
+        <p className="text-gray-600 text-xs sm:text-sm mb-4 sm:mb-6 leading-relaxed">
           Real-time rankings of health influencers based on scientific accuracy, credibility, and transparency. Updated daily using AI-powered analysis.
         </p>
 
-        <div className="flex flex-wrap justify-center items-center mb-6">
-          <div className="flex gap-4 sm:gap-6 text-center">
-            <div>
-              <h2 className="text-2xl sm:text-3xl font-bold text-teal-600">{influencers.length}</h2>
+        <div className="flex flex-wrap justify-center items-center mb-4 sm:mb-6">
+          <div className="flex gap-2 sm:gap-4 text-center">
+            <div className="flex flex-col items-center">
+              <Users className="text-teal-500 mb-1 sm:mb-2" size={24} />
+              <h2 className="text-xl sm:text-2xl font-bold text-teal-600">{influencers.length}</h2>
               <p className="text-gray-500 text-xs sm:text-sm">Active Influencers</p>
             </div>
-            <div>
-              <h2 className="text-2xl sm:text-3xl font-bold text-teal-600">{summary.claimsVerified}</h2>
+            <div className="flex flex-col items-center">
+              <CheckCircle className="text-teal-500 mb-1 sm:mb-2" size={24} />
+              <h2 className="text-xl sm:text-2xl font-bold text-teal-600">{summary.claimsVerified}</h2>
               <p className="text-gray-500 text-xs sm:text-sm">Claims Verified</p>
             </div>
-            <div>
-              <h2 className="text-2xl sm:text-3xl font-bold text-teal-600">{averageTrustScore}%</h2>
+            <div className="flex flex-col items-center">
+              <TrendingUp className="text-teal-500 mb-1 sm:mb-2" size={24} />
+              <h2 className="text-xl sm:text-2xl font-bold text-teal-600">{averageTrustScore}%</h2>
               <p className="text-gray-500 text-xs sm:text-sm">Average Trust Score</p>
             </div>
           </div>
         </div>
 
-        <div className="flex justify-between items-center mb-6">
-          <div className="flex justify-center gap-2 sm:gap-3">
+        <div className="flex justify-between items-center mb-4 sm:mb-6">
+          <div className="flex justify-center gap-1 sm:gap-2">
             {["All", "Nutrition", "Fitness", "Medicine", "Mental Health"].map((category) => (
               <button
                 key={category}
-                className={`px-3 py-2 sm:px-4 sm:py-2 rounded-md text-xs sm:text-sm font-medium transition-colors focus:ring-2 focus:ring-teal-300 ${
+                className={`px-2 py-1 sm:px-3 sm:py-2 rounded-md text-xs sm:text-sm font-medium transition-colors focus:ring-2 focus:ring-teal-300 ${
                   filter === category
                     ? "bg-teal-500 text-white"
                     : "bg-gray-200 text-gray-700 hover:bg-teal-600 hover:text-white"
@@ -101,7 +105,7 @@ const Leaderboard = () => {
             ))}
           </div>
           <button
-            className="bg-teal-500 px-3 py-2 sm:px-4 sm:py-2 rounded-md text-white text-xs sm:text-sm font-semibold shadow-md hover:bg-teal-600 transition-transform transform hover:scale-105"
+            className="bg-teal-500 px-2 py-1 sm:px-3 sm:py-2 rounded-md text-white text-xs sm:text-sm font-semibold shadow-md hover:bg-teal-600 transition-transform transform hover:scale-105"
             onClick={toggleSortOrder}
           >
             {sortOrder === "desc" ? "Highest First" : "Lowest First"}
