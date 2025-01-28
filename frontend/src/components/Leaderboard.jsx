@@ -121,7 +121,7 @@ const Leaderboard = () => {
                   <th className="py-2 sm:py-3 px-2 sm:px-4 font-semibold text-gray-600">Trust Score</th>
                   <th className="py-2 sm:py-3 px-2 sm:px-4 font-semibold text-gray-600">Trend</th>
                   <th className="py-2 sm:py-3 px-2 sm:px-4 font-semibold text-gray-600">Followers</th>
-                  <th className="py-2 sm:py-3 px-2 sm:px-4 font-semibold text-gray-600">Uploads</th>
+                  <th className="py-2 sm:py-3 px-2 sm:px-4 font-semibold text-gray-600">Verified Claims</th>
                 </tr>
               </thead>
               <tbody>
@@ -141,10 +141,10 @@ const Leaderboard = () => {
                     <td className="py-2 sm:py-3 px-2 sm:px-4 text-gray-600">{influencer.category}</td>
                     <td className="py-2 sm:py-3 px-2 sm:px-4 text-green-500">{influencer.trustScore}%</td>
                     <td className="py-2 sm:py-3 px-2 sm:px-4 text-green-500">
-                      {influencer.trend === "Up" ? "▲" : "▼"}
+                      {influencer.trend === "Up" ? "▲" : <span className="text-red-500">▼</span>}
                     </td>
                     <td className="py-2 sm:py-3 px-2 sm:px-4 text-gray-600">{influencer.estimatedFollowers}</td>
-                    <td className="py-2 sm:py-3 px-2 sm:px-4 text-gray-600">{influencer.uploads || 0}</td>
+                    <td className="py-2 sm:py-3 px-2 sm:px-4 text-gray-600">{influencer.verifiedClaims}</td>
                   </tr>
                 ))}
               </tbody>

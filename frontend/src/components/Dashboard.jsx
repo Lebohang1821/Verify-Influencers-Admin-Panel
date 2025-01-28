@@ -54,6 +54,14 @@ function Dashboard() {
               <h2 className="text-lg sm:text-xl font-semibold text-gray-900">Average Trust Score</h2>
               <p className="text-3xl sm:text-4xl font-bold text-teal-500">{averageTrustScore}%</p>
             </div>
+            <div className="p-4 sm:p-6 bg-white shadow-lg rounded-lg">
+              <h2 className="text-lg sm:text-xl font-semibold text-gray-900">Verified Claims</h2>
+              <p className="text-3xl sm:text-4xl font-bold text-teal-500">{summary.verifiedClaims}</p>
+            </div>
+            <div className="p-4 sm:p-6 bg-white shadow-lg rounded-lg">
+              <h2 className="text-lg sm:text-xl font-semibold text-gray-900">Top Influencer</h2>
+              <p className="text-3xl sm:text-4xl font-bold text-teal-500">{influencers[0]?.influencerName || "N/A"}</p>
+            </div>
           </div>
         ) : (
           <p className="text-gray-900">Loading...</p>
