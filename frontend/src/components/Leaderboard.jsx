@@ -45,9 +45,9 @@ const Leaderboard = () => {
 
   const sortedInfluencers = [...filteredInfluencers].sort((a, b) => {
     if (sortOrder === "desc") {
-      return b.trustScore - a.trustScore;
+      return b.estimatedFollowers - a.estimatedFollowers;
     } else {
-      return a.trustScore - b.trustScore;
+      return a.estimatedFollowers - b.estimatedFollowers;
     }
   });
 
