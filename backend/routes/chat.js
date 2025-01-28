@@ -1,27 +1,44 @@
 const express = require("express");
 const router = express.Router();
 const axios = require("axios");
-const mongoose = require("mongoose");
+const { MongoClient } = require("mongodb");
 require("dotenv").config();
 
 const PERPLEXITY_API_KEY = process.env.PERPLEXITY_API_KEY;
+const MONGODB_URI = process.env.MONGODB_URI;
 
-// Define a schema for storing research requests and results
-const researchSchema = new mongoose.Schema({
-  influencerName: { type: String, default: "Unknown" },
-  category: { type: String, default: "Not Available" },
-  trustScore: { type: Number, default: 0 },
-  trend: { type: String, default: "Not Available" },
-  estimatedFollowers: { type: Number, default: 0 },
-  claimsToAnalyze: { type: Number, default: 50 },
-  timeRange: { type: String, default: "Last Month" },
-  includeRevenueAnalysis: { type: Boolean, default: false },
-  verifyWithJournals: { type: Boolean, default: false },
-  scientificJournals: { type: Object, default: {} },
-  createdAt: { type: Date, default: Date.now }
+const client = new MongoClient(MONGODB_URI, {
+  useUnifiedTopology: true, // Use the new engine
+  useNewUrlParser: true, // Use the new URL parser
 });
 
-const Research = mongoose.model("Research", researchSchema);
+client.connect()
+  .then(() => {
+    console.log("MongoDB connected");
+  })
+  .catch((err) => {
+    console.error("MongoDB connection error:", err);
+  });
+
+async function callPerplexityAI(promptText) {
+  const response = await axios.post(
+    "https://api.perplexity.ai/chat/completions",
+    {
+      model: "sonar",
+      messages: [{ role: "user", content: promptText }],
+    },
+    {
+      headers: { Authorization: `Bearer ${PERPLEXITY_API_KEY}` },
+    }
+  );
+
+  if (!response.data || !response.data.choices || !response.data.choices[0]) {
+    console.error("Invalid data received from Perplexity AI:", response.data);
+    throw new Error("Invalid data received from Perplexity AI");
+  }
+
+  return response.data.choices[0].message.content;
+}
 
 router.post("/", async (req, res) => {
   const { influencerName, claimsToAnalyze, timeRange, includeRevenueAnalysis, verifyWithJournals, scientificJournals } = req.body;
@@ -38,36 +55,16 @@ router.post("/", async (req, res) => {
   8. Verify claims with the following journals: ${Object.keys(scientificJournals).filter(journal => scientificJournals[journal]).join(", ")}.`;
 
   try {
-    const response = await axios.post(
-      "https://api.perplexity.ai/chat/completions",
-      {
-        model: "sonar", // Specify the model
-        messages: [{ role: "user", content: prompt }],
-      },
-      {
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${PERPLEXITY_API_KEY}`,
-        },
-      }
-    );
+    const content = await callPerplexityAI(prompt);
 
-    console.log("Perplexity API response:", response.data);
-
-    // Extract the data from the response
-    const content = response.data.choices[0].message.content;
     console.log("Extracted content:", content);
 
-    // Match follower counts and other details
     const instagramFollowersMatch = content.match(/Instagram.*?([\d,.]+)\s*(million|M|k|K)?/i);
     const twitterFollowersMatch = content.match(/Twitter.*?([\d,.]+)\s*(million|M|k|K)?/i);
     const youtubeFollowersMatch = content.match(/YouTube.*?([\d,.]+)\s*(million|M|k|K)?/i);
     const tiktokFollowersMatch = content.match(/TikTok.*?([\d,.]+)\s*(million|M|k|K)?/i);
     const categoryMatch = content.match(/Category.*?:\s*(.*?)(?:\n|$)/i);
-    const trustScoreMatch = content.match(/Trust Score.*?:\s*(\d+(\.\d+)?)/i);
-    const trendMatch = content.match(/Trend.*?:\s*(.*?)(?:\n|$)/i);
 
-    // Parse follower counts
     const instagramFollowers = instagramFollowersMatch
       ? parseFollowers(instagramFollowersMatch[1], instagramFollowersMatch[2])
       : 0;
@@ -83,10 +80,42 @@ router.post("/", async (req, res) => {
 
     const totalFollowers = instagramFollowers + twitterFollowers + youtubeFollowers + tiktokFollowers;
 
-    // Parse category, trust score, and trend
-    const category = categoryMatch ? categoryMatch[1].trim() : "Not Available";
-    const trustScore = trustScoreMatch ? parseFloat(trustScoreMatch[1]) : 0;
-    const trend = trendMatch ? trendMatch[1].trim() : "Not Available";
+    let category = "Health";
+    if (categoryMatch) {
+      const additionalCategories = ["nutrition", "fitness", "medicine", "mental health"];
+      additionalCategories.forEach((cat) => {
+        if (categoryMatch[1].toLowerCase().includes(cat)) {
+          category += `, ${cat.charAt(0).toUpperCase() + cat.slice(1)}`;
+        }
+      });
+    }
+
+    // Set trust score based on total followers
+    let trustScore;
+    if (totalFollowers > 10000000) {
+      trustScore = 95;
+    } else if (totalFollowers > 5000000) {
+      trustScore = 90;
+    } else if (totalFollowers > 1000000) {
+      trustScore = 85;
+    } else if (totalFollowers > 500000) {
+      trustScore = 80;
+    } else if (totalFollowers > 100000) {
+      trustScore = 75;
+    } else if (totalFollowers > 50000) {
+      trustScore = 70;
+    } else if (totalFollowers > 10000) {
+      trustScore = 65;
+    } else if (totalFollowers > 5000) {
+      trustScore = 60;
+    } else if (totalFollowers > 1000) {
+      trustScore = 55;
+    } else {
+      trustScore = 50;
+    }
+
+    // Set trend based on trust score
+    const trend = trustScore >= 75 ? "Up" : "Down";
 
     console.log("Extracted data:", {
       instagramFollowers,
@@ -99,11 +128,9 @@ router.post("/", async (req, res) => {
       trend,
     });
 
-    // Validate numerical values
     const validatedTotalFollowers = isNaN(totalFollowers) ? 0 : totalFollowers;
 
-    // Save the request and response to MongoDB
-    const research = new Research({
+    const research = {
       influencerName,
       category,
       trustScore,
@@ -114,22 +141,15 @@ router.post("/", async (req, res) => {
       includeRevenueAnalysis,
       verifyWithJournals,
       scientificJournals
+    };
+
+    const db = client.db("yourDatabaseName");
+    const collection = db.collection("researches");
+    await collection.insertOne(research, {
+      writeConcern: { w: 'majority', j: true, wtimeout: 5000 }
     });
 
-    await research.save();
-
-    res.json({
-      influencerName,
-      category,
-      trustScore,
-      trend,
-      estimatedFollowers: validatedTotalFollowers,
-      claimsToAnalyze,
-      timeRange,
-      includeRevenueAnalysis,
-      verifyWithJournals,
-      scientificJournals
-    });
+    res.json(research);
   } catch (error) {
     console.error("Error communicating with Perplexity:", error.response ? error.response.data : error.message);
     res.status(error.response ? error.response.status : 500).json({
@@ -138,10 +158,22 @@ router.post("/", async (req, res) => {
   }
 });
 
+router.get("/leaderboard", async (req, res) => {
+  try {
+    const db = client.db("yourDatabaseName");
+    const collection = db.collection("researches");
+    const leaderboard = await collection.find().sort({ trustScore: -1 }).toArray();
+    res.json(leaderboard);
+  } catch (error) {
+    console.error("Error fetching leaderboard:", error.message);
+    res.status(500).json({ error: "Error fetching leaderboard" });
+  }
+});
+
 function parseFollowers(followersString, unit) {
-  if (!followersString) return 0; // Fallback if followersString is undefined
-  let followers = parseFloat(followersString.replace(/[^\d.]/g, "")); // Remove non-numeric characters
-  if (isNaN(followers)) return 0; // Fallback if parsing fails
+  if (!followersString) return 0;
+  let followers = parseFloat(followersString.replace(/[^\d.]/g, ""));
+  if (isNaN(followers)) return 0;
   if (unit) {
     unit = unit.toLowerCase();
     if (unit === "million" || unit === "m") {
