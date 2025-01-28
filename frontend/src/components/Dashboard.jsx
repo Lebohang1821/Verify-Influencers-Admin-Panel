@@ -39,7 +39,7 @@ function Dashboard() {
     : 0;
 
   return (
-    <div className="bg-gradient-to-r from-blue-50 to-blue-100 min-h-screen p-4 sm:p-6">
+    <div className="bg-gradient-to-b from-green-50 to-green-100 min-h-screen p-4 sm:p-6">
       <div className="max-w-4xl mx-auto"> {/* Adjusted width */}
         <header className="flex justify-between items-center mb-4 sm:mb-6">
           <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">Dashboard</h1>

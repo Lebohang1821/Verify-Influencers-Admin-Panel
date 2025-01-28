@@ -61,7 +61,7 @@ const Leaderboard = () => {
     : 0;
 
   return (
-    <div className="bg-gray-100 min-h-screen p-4 sm:p-6">
+    <div className="bg-gradient-to-b from-green-50 to-green-100 min-h-screen p-4 sm:p-6">
       <div className="max-w-4xl mx-auto">
         <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-4 sm:mb-6">Influencer Trust Leaderboard</h1>
         <p className="text-gray-600 text-xs sm:text-sm mb-4 sm:mb-6 leading-relaxed">

@@ -102,7 +102,7 @@ function Monetization() {
         </section>
 
         <footer className="text-center text-gray-600">
-          <p>&copy; 2023 Health Influencers. All rights reserved.</p>
+          <p>&copy; 2025 Health Influencers. All rights reserved.</p>
         </footer>
       </div>
     </div>

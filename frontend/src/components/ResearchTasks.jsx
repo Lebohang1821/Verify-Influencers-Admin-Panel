@@ -133,7 +133,7 @@ const ResearchTasks = () => {
   };
 
   return (
-    <div className="bg-gray-100 min-h-screen p-6">
+    <div className="bg-gradient-to-b from-green-50 to-green-100 min-h-screen p-6">
       <div className="max-w-4xl mx-auto">
         <Link to="/dashboard" className="text-teal-600 hover:underline mb-4 inline-block">
           &larr; Back to Dashboard
