@@ -30,7 +30,8 @@ const Leaderboard = () => {
           throw new Error(`HTTP error! Status: ${response.status}`);
         }
         const data = await response.json();
-        setSummary({ claimsVerified: data.totalClaims, averageTrustScore: data.verifiedClaims / data.totalClaims * 100 });
+        const averageTrustScore = data.verifiedClaims / data.totalClaims;
+        setSummary({ claimsVerified: data.totalClaims, averageTrustScore });
       } catch (error) {
         console.error("Error fetching summary:", error);
       }
@@ -54,6 +55,10 @@ const Leaderboard = () => {
     setSortOrder(prevOrder => (prevOrder === "desc" ? "asc" : "desc"));
   };
 
+  const averageTrustScore = influencers.length > 0
+    ? (influencers.reduce((sum, influencer) => sum + influencer.trustScore, 0) / influencers.length).toFixed(1)
+    : 0;
+
   return (
     <div className="bg-gray-100 min-h-screen p-6">
       <div className="max-w-4xl mx-auto">
@@ -73,7 +78,7 @@ const Leaderboard = () => {
               <p className="text-gray-500 text-xs sm:text-sm">Claims Verified</p>
             </div>
             <div>
-              <h2 className="text-2xl sm:text-3xl font-bold text-teal-600">{summary.averageTrustScore.toFixed(1)}%</h2>
+              <h2 className="text-2xl sm:text-3xl font-bold text-teal-600">{averageTrustScore}%</h2>
               <p className="text-gray-500 text-xs sm:text-sm">Average Trust Score</p>
             </div>
           </div>
