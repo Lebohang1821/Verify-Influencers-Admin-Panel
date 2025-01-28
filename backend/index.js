@@ -2,8 +2,9 @@ require("dotenv").config();
 const express = require("express");
 const cors = require("cors");
 const mongoose = require("mongoose");
+const bodyParser = require('body-parser');
 const app = express();
-const port = 5000;
+const port = process.env.PORT || 5000;
 
 app.use(cors({
   origin: 'http://localhost:3000', // Adjust this to match your frontend URL
@@ -11,7 +12,7 @@ app.use(cors({
   allowedHeaders: ['Content-Type', 'Authorization']
 }));
 
-app.use(express.json());
+app.use(bodyParser.json());
 
 mongoose
   .connect(process.env.MONGODB_URI)
@@ -21,21 +22,15 @@ mongoose
 const influencersRouter = require("./routes/influencers");
 const claimsRouter = require("./routes/claims");
 const verifyRouter = require("./routes/verify");
+const chatRouter = require("./routes/chat");
+const twitterRouter = require('./routes/twitter');
+const searchResultsRouter = require('./routes/searchResults');
 
 app.use("/api/influencers", influencersRouter);
 app.use("/api/claims", claimsRouter);
 app.use("/api/verify", verifyRouter);
-
-// Add the chat route
-const chatRouter = require("./routes/chat");
-app.use("/api/chat", chatRouter);
-
-// Add the Twitter route
-const twitterRouter = require('./routes/twitter');
+app.use('/api/chat', chatRouter);
 app.use('/api/twitter', twitterRouter);
-
-// Add the search results route
-const searchResultsRouter = require('./routes/searchResults');
 app.use('/api/search-results', searchResultsRouter);
 
 // Dummy route for summary data
