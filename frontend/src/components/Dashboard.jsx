@@ -41,8 +41,8 @@ function Dashboard() {
   return (
     <div className="bg-gradient-to-b from-green-50 to-green-100 min-h-screen p-4 sm:p-6">
       <div className="max-w-4xl mx-auto"> {/* Adjusted width */}
-        <header className="flex justify-between items-center mb-4 sm:mb-6">
-          <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">Dashboard</h1>
+        <header className="flex flex-col sm:flex-row justify-between items-center mb-4 sm:mb-6">
+          <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-4 sm:mb-0">Dashboard</h1>
           <nav className="flex gap-2 sm:gap-4">
             <Link to="/leaderboard" className="text-teal-600 hover:text-teal-800 font-semibold">Leaderboard</Link>
             <Link to="/research-tasks" className="text-teal-600 hover:text-teal-800 font-semibold">Research Tasks</Link>

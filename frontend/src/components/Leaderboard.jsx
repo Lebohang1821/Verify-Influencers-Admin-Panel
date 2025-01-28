@@ -5,7 +5,7 @@ import { Users, CheckCircle, TrendingUp } from "lucide-react"; // Import icons
 const Leaderboard = () => {
   const [influencers, setInfluencers] = useState([]);
   const [error, setError] = useState(null);
-  const [filter, setFilter] = useState("All");
+  const [selectedCategory, setSelectedCategory] = useState("All");
   const [summary, setSummary] = useState({ claimsVerified: 0, averageTrustScore: 0 });
   const [sortOrder, setSortOrder] = useState("desc");
 
@@ -42,7 +42,14 @@ const Leaderboard = () => {
     fetchSummary();
   }, []);
 
-  const filteredInfluencers = filter === "All" ? influencers : influencers.filter(i => i.category === filter);
+  const handleCategoryClick = (category) => {
+    setSelectedCategory(category);
+  };
+
+  const filteredInfluencers =
+    selectedCategory === "All"
+      ? influencers
+      : influencers.filter((i) => i.category === selectedCategory);
 
   const sortedInfluencers = [...filteredInfluencers].sort((a, b) => {
     if (sortOrder === "desc") {
@@ -53,7 +60,7 @@ const Leaderboard = () => {
   });
 
   const toggleSortOrder = () => {
-    setSortOrder(prevOrder => (prevOrder === "desc" ? "asc" : "desc"));
+    setSortOrder((prevOrder) => (prevOrder === "desc" ? "asc" : "desc"));
   };
 
   const averageTrustScore = influencers.length > 0
@@ -94,11 +101,11 @@ const Leaderboard = () => {
               <button
                 key={category}
                 className={`px-2 py-1 sm:px-3 sm:py-2 rounded-md text-xs sm:text-sm font-medium transition-colors focus:ring-2 focus:ring-teal-300 ${
-                  filter === category
+                  selectedCategory === category
                     ? "bg-teal-500 text-white"
                     : "bg-gray-200 text-gray-700 hover:bg-teal-600 hover:text-white"
                 }`}
-                onClick={() => setFilter(category)}
+                onClick={() => handleCategoryClick(category)}
               >
                 {category}
               </button>
