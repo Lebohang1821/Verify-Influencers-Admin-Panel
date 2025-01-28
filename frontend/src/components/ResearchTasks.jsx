@@ -13,13 +13,13 @@ const ResearchTasks = () => {
   const [loading, setLoading] = useState(false);
   const [tweets, setTweets] = useState([]);
   const [scientificJournals, setScientificJournals] = useState({
-    pubmed: true,
-    nature: true,
-    science: true,
-    cell: true,
-    lancet: true,
-    nejm: true,
-    jama: true,
+    "Pubmed Central": true,
+    "Nature": true,
+    "Science": true,
+    "Cell": true,
+    "The Lancet": true,
+    "New England Journal Of Medicine": true,
+    "Jama Network": true,
   });
   const [newJournal, setNewJournal] = useState("");
   const [showAddSection, setShowAddSection] = useState(false);
@@ -197,7 +197,7 @@ const ResearchTasks = () => {
             type="number"
             placeholder="Claims to analyze"
             value={claimsToAnalyze}
-            onChange={(e) => setClaimsToAnalyze(Number(e.target.value) || 50)}
+            onChange={(e) => setClaimsToAnalyze(Number(e.target.value) ||1)}
             className="w-full mb-4 border border-gray-300 p-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500 text-black"
           />
           <div className="flex flex-col gap-4 items-end">
@@ -340,7 +340,7 @@ const ResearchTasks = () => {
                 <p><strong>Category:</strong> {researchResults.category}</p>
                 <p><strong>Trust Score:</strong> {researchResults.trustScore}</p>
                 <p><strong>Trend:</strong> {researchResults.trend}</p>
-                <p><strong>Estimated Followers:</strong> {researchResults.estimatedFollowers}</p>
+                <p><strong>IG Followers:</strong> {researchResults.estimatedFollowers}</p>
                 <p><strong>Claims to Analyze:</strong> {researchResults.claimsToAnalyze}</p>
                 <p><strong>Time Range:</strong> {researchResults.timeRange}</p>
                 <p><strong>Include Revenue Analysis:</strong> {researchResults.includeRevenueAnalysis ? 'Yes' : 'No'}</p>

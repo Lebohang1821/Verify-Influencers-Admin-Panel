@@ -25,7 +25,7 @@ const Leaderboard = () => {
 
     const fetchSummary = async () => {
       try {
-        const response = await fetch("http://localhost:5000/api/summary");
+        const response = await fetch("http://localhost:5000/api/chat/summary");
         if (!response.ok) {
           throw new Error(`HTTP error! Status: ${response.status}`);
         }
@@ -144,6 +144,48 @@ const Leaderboard = () => {
                 ))}
               </tbody>
             </table>
+            {sortedInfluencers.map((influencer, index) => (
+              <div key={index} className="p-4 border-t border-gray-200">
+                <p className="text-gray-800"><strong>Description:</strong> {influencer.description}</p>
+                <div className="mt-4">
+                  <h3 className="text-lg font-semibold text-gray-900">Summary Table:</h3>
+                  <div className="overflow-x-auto">
+                    <table className="min-w-full bg-white">
+                      <tbody>
+                        <tr>
+                          <td className="border px-4 py-2 font-semibold">Followers</td>
+                          <td className="border px-4 py-2">{influencer.estimatedFollowers}</td>
+                        </tr>
+                        <tr>
+                          <td className="border px-4 py-2 font-semibold">Category</td>
+                          <td className="border px-4 py-2">{influencer.category}</td>
+                        </tr>
+                        <tr>
+                          <td className="border px-4 py-2 font-semibold">Trust Score</td>
+                          <td className="border px-4 py-2">{influencer.trustScore}</td>
+                        </tr>
+                        <tr>
+                          <td className="border px-4 py-2 font-semibold">Current Trend</td>
+                          <td className="border px-4 py-2">{influencer.trend}</td>
+                        </tr>
+                        <tr>
+                          <td className="border px-4 py-2 font-semibold">Claims Analysis</td>
+                          <td className="border px-4 py-2">{influencer.claimsToAnalyze}</td>
+                        </tr>
+                        <tr>
+                          <td className="border px-4 py-2 font-semibold">Revenue</td>
+                          <td className="border px-4 py-2">{influencer.includeRevenueAnalysis ? 'Included' : 'Not Included'}</td>
+                        </tr>
+                        <tr>
+                          <td className="border px-4 py-2 font-semibold">Description</td>
+                          <td className="border px-4 py-2">{influencer.description}</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            ))}
           </div>
         )}
       </div>
