@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
+import { FaSpinner } from "react-icons/fa";
 
 const ResearchTasks = () => {
   const [influencerName, setInfluencerName] = useState("");
@@ -313,9 +314,17 @@ const ResearchTasks = () => {
               className="bg-teal-600 text-white py-2 px-4 rounded-lg hover:bg-teal-700 transition duration-300"
               disabled={loading}
             >
-              {loading ? "Loading..." : "+ Start Research"}
+              {loading ? <FaSpinner className="animate-spin" /> : "+ Start Research"}
             </button>
           </div>
+          {loading && (
+            <div className="fixed inset-0 bg-gray-800 bg-opacity-75 flex items-center justify-center z-50">
+              <div className="bg-white bg-opacity-90 p-6 rounded-lg shadow-lg flex flex-col items-center">
+                <p className="text-gray-900 text-lg font-semibold">Analyzing data, please wait...</p>
+                <FaSpinner className="animate-spin text-teal-500 text-4xl mt-4" />
+              </div>
+            </div>
+          )}
           {error && (
             <div className="bg-red-100 text-red-800 p-4 rounded-lg mt-4">
               {error}
