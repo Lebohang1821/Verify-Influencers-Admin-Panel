@@ -58,11 +58,11 @@ async function callAIForNewInfluencers() {
     throw new Error("Invalid data received from AI");
   }
 
-  return response.data.choices[0].message.content;
+  return response.data.choices[0].message.content.split("\n").map(line => line.trim()).filter(line => line);
 }
 
 router.post("/", async (req, res) => {
-  const { influencerName, claimsToAnalyze, timeRange, includeRevenueAnalysis, verifyWithJournals, scientificJournals } = req.body;
+  const { influencerName, claimsToAnalyze, timeRange, includeRevenueAnalysis, verifyWithJournals, scientificJournals, notes } = req.body;
   console.log("Received request:", req.body);
 
   const prompt = `Provide the following information for the influencer "${influencerName}":
@@ -70,7 +70,8 @@ router.post("/", async (req, res) => {
   2. Total number of followers on Twitter (if available).
   3. Total number of followers on YouTube (if available).
   4. Category of the influencer.
-  5. Trust score of the influencer.`;
+  5. Trust score of the influencer.
+  6. Notes: ${notes}`;
 
   try {
     const content = await callPerplexityAI(prompt);
@@ -133,6 +134,8 @@ router.post("/", async (req, res) => {
       includeRevenueAnalysis,
       verifyWithJournals,
       scientificJournals,
+      notes,
+      verifiedClaims: claimsToAnalyze // Use claimsToAnalyze for verifiedClaims
     };
 
     const db = client.db("yourDatabaseName");
@@ -152,8 +155,7 @@ router.post("/", async (req, res) => {
 
 router.post("/new-influencers", async (req, res) => {
   try {
-    const content = await callAIForNewInfluencers();
-    const influencers = content.split("\n").filter((line) => line.trim() !== "");
+    const influencers = await callAIForNewInfluencers();
     res.json({ influencers });
   } catch (error) {
     console.error("Error fetching new influencers:", error.message);
@@ -167,8 +169,8 @@ router.get("/leaderboard", async (req, res) => {
     const collection = db.collection("researches");
     const leaderboard = await collection.find().sort({ trustScore: -1 }).toArray();
     const filteredLeaderboard = leaderboard.map((entry) => {
-      const { influencerName, category, trustScore, trend, estimatedFollowers } = entry;
-      return { influencerName, category, trustScore, trend, estimatedFollowers };
+      const { influencerName, category, trustScore, trend, estimatedFollowers, verifiedClaims } = entry;
+      return { influencerName, category, trustScore, trend, estimatedFollowers, verifiedClaims };
     });
     res.json(filteredLeaderboard);
   } catch (error) {
@@ -186,7 +188,7 @@ router.get("/summary", async (req, res) => {
         $group: {
           _id: null,
           totalClaims: { $sum: "$claimsToAnalyze" },
-          verifiedClaims: { $sum: "$trustScore" }
+          verifiedClaims: { $sum: "$verifiedClaims" }
         }
       }
     ]).toArray();
