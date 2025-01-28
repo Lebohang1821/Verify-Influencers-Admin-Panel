@@ -11,7 +11,7 @@ const Leaderboard = () => {
   useEffect(() => {
     const fetchInfluencers = async () => {
       try {
-        const response = await fetch("http://localhost:5000/api/influencers");
+        const response = await fetch("http://localhost:5000/api/chat/leaderboard");
         if (!response.ok) {
           throw new Error(`HTTP error! Status: ${response.status}`);
         }
@@ -129,17 +129,17 @@ const Leaderboard = () => {
                   >
                     <td className="py-2 sm:py-3 px-2 sm:px-4 text-gray-600">#{index + 1}</td>
                     <td className="py-2 sm:py-3 px-2 sm:px-4 text-gray-900 font-medium">
-                      <Link to={`/influencer/${influencer.id}`} className="text-teal-500 hover:underline">
-                        {influencer.name}
+                      <Link to={`/influencer/${influencer._id}`} className="text-teal-500 hover:underline">
+                        {influencer.influencerName}
                       </Link>
                     </td>
                     <td className="py-2 sm:py-3 px-2 sm:px-4 text-gray-600">{influencer.category}</td>
                     <td className="py-2 sm:py-3 px-2 sm:px-4 text-green-500">{influencer.trustScore}%</td>
                     <td className="py-2 sm:py-3 px-2 sm:px-4 text-green-500">
-                      {influencer.trend === "up" ? "▲" : "▼"}
+                      {influencer.trend === "Up" ? "▲" : "▼"}
                     </td>
-                    <td className="py-2 sm:py-3 px-2 sm:px-4 text-gray-600">{influencer.followers}</td>
-                    <td className="py-2 sm:py-3 px-2 sm:px-4 text-gray-600">{influencer.uploads}</td>
+                    <td className="py-2 sm:py-3 px-2 sm:px-4 text-gray-600">{influencer.estimatedFollowers}</td>
+                    <td className="py-2 sm:py-3 px-2 sm:px-4 text-gray-600">{influencer.uploads || 0}</td>
                   </tr>
                 ))}
               </tbody>
