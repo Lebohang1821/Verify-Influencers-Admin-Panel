@@ -25,6 +25,7 @@ const ResearchTasks = () => {
   const [showAddSection, setShowAddSection] = useState(false);
   const [researchConfig, setResearchConfig] = useState("");
   const [newInfluencers, setNewInfluencers] = useState([]);
+  const [notes, setNotes] = useState("");
 
   useEffect(() => {
     if (researchConfig === "Discover New") {
@@ -105,6 +106,7 @@ const ResearchTasks = () => {
       includeRevenueAnalysis,
       verifyWithJournals,
       scientificJournals,
+      notes,
     };
 
     try {
@@ -203,143 +205,165 @@ const ResearchTasks = () => {
                   max="50"
                 />
               </label>
-            </div>
-          )}
-          <div className="flex flex-col gap-4 items-end">
-            <label className="inline-flex items-center justify-between w-full text-black">
-              <span className="ml-2">Include Revenue Analysis</span>
-              <div
-                className={`relative w-12 h-6 flex items-center bg-gray-700 rounded-full cursor-pointer transition-all ${
-                  includeRevenueAnalysis ? "bg-green-500" : "bg-gray-700"
-                }`}
-                onClick={() => setIncludeRevenueAnalysis(!includeRevenueAnalysis)}
-              >
-                <div
-                  className={`w-6 h-6 bg-white rounded-full shadow-md transform transition-transform ${
-                    includeRevenueAnalysis ? "translate-x-6" : ""
-                  }`}
-                ></div>
-              </div>
-            </label>
-            <label className="inline-flex items-center justify-between w-full text-black">
-              <span className="ml-2">Verify with Journals</span>
-              <div
-                className={`relative w-12 h-6 flex items-center bg-gray-700 rounded-full cursor-pointer transition-all ${
-                  verifyWithJournals ? "bg-green-500" : "bg-gray-700"
-                }`}
-                onClick={() => setVerifyWithJournals(!verifyWithJournals)}
-              >
-                <div
-                  className={`w-6 h-6 bg-white rounded-full shadow-md transform transition-transform ${
-                    verifyWithJournals ? "translate-x-6" : ""
-                  }`}
-                ></div>
-              </div>
-            </label>
-          </div>
-          {verifyWithJournals && (
-            <div className="bg-gray-50 p-6 rounded-xl mt-6">
-              <h3 className="text-2xl font-semibold mb-4 text-black">Scientific Journals</h3>
-
-              <div className="flex justify-end items-center space-x-4 mb-6">
-                <button
-                  className="text-sm text-green-500 hover:underline"
-                  onClick={handleSelectAll}
-                >
-                  Select All
-                </button>
-                <button
-                  className="text-sm text-red-500 hover:underline"
-                  onClick={handleDeselectAll}
-                >
-                  Deselect All
-                </button>
-              </div>
-
-              <div className="grid grid-cols-2 gap-4 mb-6">
-                {Object.keys(scientificJournals).map((journal) => (
-                  <label
-                    key={journal}
-                    className={`flex justify-between items-center bg-gray-200 p-2 rounded-lg cursor-pointer border transition-all ${
-                      scientificJournals[journal] ? "border-green-500" : "border-transparent"
+              <div className="flex flex-col gap-4 items-end mt-6">
+                <label className="inline-flex items-center justify-between w-full text-black">
+                  <span className="ml-2">Include Revenue Analysis</span>
+                  <div
+                    className={`relative w-12 h-6 flex items-center bg-gray-700 rounded-full cursor-pointer transition-all ${
+                      includeRevenueAnalysis ? "bg-green-500" : "bg-gray-700"
                     }`}
-                    onClick={() => handleJournalChange(journal)}
+                    onClick={() => setIncludeRevenueAnalysis(!includeRevenueAnalysis)}
                   >
-                    <span className="text-sm font-medium capitalize text-black">{journal}</span>
                     <div
-                      className={`h-5 w-5 rounded-full border-2 flex items-center justify-center transition-all ${
-                        scientificJournals[journal] ? "bg-green-500 border-green-500" : "border-gray-500"
+                      className={`w-6 h-6 bg-white rounded-full shadow-md transform transition-transform ${
+                        includeRevenueAnalysis ? "translate-x-6" : ""
                       }`}
-                    >
-                      {scientificJournals[journal] && (
-                        <div className="h-2.5 w-2.5 rounded-full bg-white"></div>
-                      )}
-                    </div>
-                  </label>
-                ))}
+                    ></div>
+                  </div>
+                </label>
+                <label className="inline-flex items-center justify-between w-full text-black">
+                  <span className="ml-2">Verify with Journals</span>
+                  <div
+                    className={`relative w-12 h-6 flex items-center bg-gray-700 rounded-full cursor-pointer transition-all ${
+                      verifyWithJournals ? "bg-green-500" : "bg-gray-700"
+                    }`}
+                    onClick={() => setVerifyWithJournals(!verifyWithJournals)}
+                  >
+                    <div
+                      className={`w-6 h-6 bg-white rounded-full shadow-md transform transition-transform ${
+                        verifyWithJournals ? "translate-x-6" : ""
+                      }`}
+                    ></div>
+                  </div>
+                </label>
               </div>
+              {verifyWithJournals && (
+                <div className="bg-gray-50 p-6 rounded-xl mt-6">
+                  <h3 className="text-2xl font-semibold mb-4 text-black">Scientific Journals</h3>
 
-              {showAddSection && (
-                <div className="space-y-2">
-                  <label className="block font-medium text-sm text-black" htmlFor="add-journal">
-                    Add New Journal
-                  </label>
-                  <div className="flex space-x-2">
-                    <input
-                      id="add-journal"
-                      type="text"
-                      className="flex-1 bg-gray-200 bg-opacity-50 rounded-lg p-3 text-black focus:ring-2 focus:ring-green-500"
-                      placeholder="Journal name"
-                      value={newJournal}
-                      onChange={(e) => setNewJournal(e.target.value)}
-                    />
+                  <div className="flex justify-end items-center space-x-4 mb-6">
+                    <button
+                      className="text-sm text-green-500 hover:underline"
+                      onClick={handleSelectAll}
+                    >
+                      Select All
+                    </button>
+                    <button
+                      className="text-sm text-red-500 hover:underline"
+                      onClick={handleDeselectAll}
+                    >
+                      Deselect All
+                    </button>
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-4 mb-6">
+                    {Object.keys(scientificJournals).map((journal) => (
+                      <label
+                        key={journal}
+                        className={`flex justify-between items-center bg-gray-200 p-2 rounded-lg cursor-pointer border transition-all ${
+                          scientificJournals[journal] ? "border-green-500" : "border-transparent"
+                        }`}
+                        onClick={() => handleJournalChange(journal)}
+                      >
+                        <span className="text-sm font-medium capitalize text-black">{journal}</span>
+                        <div
+                          className={`h-5 w-5 rounded-full border-2 flex items-center justify-center transition-all ${
+                            scientificJournals[journal] ? "bg-green-500 border-green-500" : "border-gray-500"
+                          }`}
+                        >
+                          {scientificJournals[journal] && (
+                            <div className="h-2.5 w-2.5 rounded-full bg-white"></div>
+                          )}
+                        </div>
+                      </label>
+                    ))}
+                  </div>
+
+                  {showAddSection && (
+                    <div className="space-y-2">
+                      <label className="block font-medium text-sm text-black" htmlFor="add-journal">
+                        Add New Journal
+                      </label>
+                      <div className="flex space-x-2">
+                        <input
+                          id="add-journal"
+                          type="text"
+                          className="flex-1 bg-gray-200 bg-opacity-50 rounded-lg p-3 text-black focus:ring-2 focus:ring-green-500"
+                          placeholder="Journal name"
+                          value={newJournal}
+                          onChange={(e) => setNewJournal(e.target.value)}
+                        />
+                        <button
+                          className="text-green-600 font-bold py-2 px-4 rounded-lg transition"
+                          onClick={handleAddJournal}
+                        >
+                          Add
+                        </button>
+                      </div>
+                    </div>
+                  )}
+
+                  <div className="mt-4">
                     <button
                       className="text-green-600 font-bold py-2 px-4 rounded-lg transition"
-                      onClick={handleAddJournal}
+                      onClick={() => setShowAddSection(!showAddSection)}
                     >
-                      Add
+                      {showAddSection ? "Remove Add Section" : "+ Add New Journal"}
                     </button>
                   </div>
                 </div>
               )}
-
-              <div className="mt-4">
+              <label className="block text-sm font-medium text-gray-900 mt-6">
+                Notes for Research Assistant
+              </label>
+              <textarea
+                className="w-full mt-2 p-3 bg-transparent border border-gray-300 rounded-lg text-gray-900 focus:outline-none focus:ring-2 focus:ring-teal-500"
+                placeholder="Add any specific instructions or focus areas..."
+                rows="3"
+                value={notes}
+                onChange={(e) => setNotes(e.target.value)}
+              ></textarea>
+              <div className="flex justify-end mt-6">
                 <button
-                  className="text-green-600 font-bold py-2 px-4 rounded-lg transition"
-                  onClick={() => setShowAddSection(!showAddSection)}
+                  onClick={handleStartResearch}
+                  className="bg-teal-600 text-white py-2 px-4 rounded-lg hover:bg-teal-700 transition duration-300"
+                  disabled={loading}
                 >
-                  {showAddSection ? "Remove Add Section" : "+ Add New Journal"}
+                  {loading ? <FaSpinner className="animate-spin" /> : "+ Start Research"}
                 </button>
               </div>
             </div>
           )}
-          {researchConfig === "Specific Influencer" && (
-            <div className="flex justify-end mt-6">
-              <button
-                onClick={handleStartResearch}
-                className="bg-teal-600 text-white py-2 px-4 rounded-lg hover:bg-teal-700 transition duration-300"
-                disabled={loading}
-              >
-                {loading ? <FaSpinner className="animate-spin" /> : "+ Start Research"}
-              </button>
-            </div>
-          )}
           {researchConfig === "Discover New" && (
-            <div className="mt-6">
-              <h4 className="text-lg font-semibold text-gray-900 mb-2">New Influencers</h4>
-              <div className="flex justify-end">
+            <div>
+              <label className="block text-sm font-medium text-gray-900 mt-6">
+                Notes for Research Assistant
+              </label>
+              <textarea
+                className="w-full mt-2 p-3 bg-transparent border border-gray-300 rounded-lg text-gray-900 focus:outline-none focus:ring-2 focus:ring-teal-500"
+                placeholder="Add any specific instructions or focus areas..."
+                rows="3"
+                value={notes}
+                onChange={(e) => setNotes(e.target.value)}
+              ></textarea>
+              <div className="flex justify-end mt-6">
                 <button
                   className="bg-teal-600 text-white py-2 px-4 rounded-lg hover:bg-teal-700 transition duration-300 mb-4"
                   onClick={fetchNewInfluencers}
                 >
                   Discover
                 </button>
+              </div>
+              {newInfluencers.length > 0 && (
+                <div className="mt-6">
+                  <h3 className="text-xl font-semibold text-gray-900 mb-4">New Influencers</h3>
+                  <ul className="list-disc list-inside text-gray-800">
+                    {newInfluencers.map((influencer, index) => (
+                      <li key={index}>{influencer}</li>
+                    ))}
+                  </ul>
                 </div>
-              <ul className="list-disc list-inside">
-                {newInfluencers.map((influencer, index) => (
-                  <li key={index} className="text-gray-800">{influencer}</li>
-                ))}
-              </ul>
+              )}
             </div>
           )}
           {loading && (

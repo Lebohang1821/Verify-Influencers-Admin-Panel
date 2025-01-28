@@ -9,7 +9,7 @@ const influencers = [
     trustScore: "High",
     trend: "Rising",
     followers: "16.1M",
-    uploads: "Frequent"
+    verifiedClaims: 120
   },
   {
     rank: 2,
@@ -18,7 +18,7 @@ const influencers = [
     trustScore: "High",
     trend: "Rising",
     followers: "6.2M",
-    uploads: "Frequent"
+    verifiedClaims: 110
   },
   {
     rank: 3,
@@ -27,7 +27,7 @@ const influencers = [
     trustScore: "High",
     trend: "Stable",
     followers: "4.4M",
-    uploads: "Frequent"
+    verifiedClaims: 100
   },
   {
     rank: 4,
@@ -36,7 +36,7 @@ const influencers = [
     trustScore: "High",
     trend: "Rising",
     followers: "1.3M",
-    uploads: "Frequent"
+    verifiedClaims: 90
   },
   {
     rank: 5,
@@ -45,7 +45,7 @@ const influencers = [
     trustScore: "High",
     trend: "Rising",
     followers: "1.5M",
-    uploads: "Frequent"
+    verifiedClaims: 85
   },
   {
     rank: 6,
@@ -54,7 +54,7 @@ const influencers = [
     trustScore: "High",
     trend: "Stable",
     followers: "1.2M",
-    uploads: "Frequent"
+    verifiedClaims: 80
   },
   {
     rank: 7,
@@ -63,7 +63,7 @@ const influencers = [
     trustScore: "High",
     trend: "Stable",
     followers: "1.3M",
-    uploads: "Frequent"
+    verifiedClaims: 75
   },
   {
     rank: 8,
@@ -72,7 +72,7 @@ const influencers = [
     trustScore: "High",
     trend: "Stable",
     followers: "1.4M",
-    uploads: "Frequent"
+    verifiedClaims: 70
   },
   {
     rank: 9,
@@ -81,7 +81,7 @@ const influencers = [
     trustScore: "High",
     trend: "Rising",
     followers: "9.1M",
-    uploads: "Frequent"
+    verifiedClaims: 65
   },
   {
     rank: 10,
@@ -90,7 +90,7 @@ const influencers = [
     trustScore: "High",
     trend: "Rising",
     followers: "3.2M",
-    uploads: "Frequent"
+    verifiedClaims: 60
   }
 ];
 
