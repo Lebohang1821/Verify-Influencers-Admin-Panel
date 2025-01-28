@@ -6,6 +6,7 @@ require("dotenv").config();
 
 const PERPLEXITY_API_KEY = process.env.PERPLEXITY_API_KEY;
 const MONGODB_URI = process.env.MONGODB_URI;
+const AI1_API_KEY = process.env.AI1_API_KEY;
 
 const client = new MongoClient(MONGODB_URI, {
   useUnifiedTopology: true, // Use the new engine
@@ -35,6 +36,26 @@ async function callPerplexityAI(promptText) {
   if (!response.data || !response.data.choices || !response.data.choices[0]) {
     console.error("Invalid data received from Perplexity AI:", response.data);
     throw new Error("Invalid data received from Perplexity AI");
+  }
+
+  return response.data.choices[0].message.content;
+}
+
+async function callAIForNewInfluencers() {
+  const response = await axios.post(
+    "https://api.perplexity.ai/chat/completions",
+    {
+      model: "sonar",
+      messages: [{ role: "user", content: "List 10 new health influencers." }],
+    },
+    {
+      headers: { Authorization: `Bearer ${AI1_API_KEY}` },
+    }
+  );
+
+  if (!response.data || !response.data.choices || !response.data.choices[0]) {
+    console.error("Invalid data received from AI:", response.data);
+    throw new Error("Invalid data received from AI");
   }
 
   return response.data.choices[0].message.content;
@@ -114,19 +135,6 @@ router.post("/", async (req, res) => {
       scientificJournals,
     };
 
-    const summaryTable = `
-      | Category | Information |
-      |----------|-------------|
-      | **Followers** | ${validatedTotalFollowers} |
-      | **Category** | ${category} |
-      | **Trust Score** | ${trustScore} |
-      | **Current Trend** | ${trend} |
-      | **Claims Analysis** | ${claimsToAnalyze} |
-      | **Revenue** | ${includeRevenueAnalysis ? 'Included' : 'Not Included'} |
-    `;
-
-    research.summaryTable = summaryTable;
-
     const db = client.db("yourDatabaseName");
     const collection = db.collection("researches");
     await collection.insertOne(research, {
@@ -142,12 +150,27 @@ router.post("/", async (req, res) => {
   }
 });
 
+router.post("/new-influencers", async (req, res) => {
+  try {
+    const content = await callAIForNewInfluencers();
+    const influencers = content.split("\n").filter((line) => line.trim() !== "");
+    res.json({ influencers });
+  } catch (error) {
+    console.error("Error fetching new influencers:", error.message);
+    res.status(500).json({ error: "Failed to fetch new influencers" });
+  }
+});
+
 router.get("/leaderboard", async (req, res) => {
   try {
     const db = client.db("yourDatabaseName");
     const collection = db.collection("researches");
     const leaderboard = await collection.find().sort({ trustScore: -1 }).toArray();
-    res.json(leaderboard);
+    const filteredLeaderboard = leaderboard.map((entry) => {
+      const { influencerName, category, trustScore, trend, estimatedFollowers } = entry;
+      return { influencerName, category, trustScore, trend, estimatedFollowers };
+    });
+    res.json(filteredLeaderboard);
   } catch (error) {
     console.error("Error fetching leaderboard:", error.message);
     res.status(500).json({ error: "Error fetching leaderboard" });
