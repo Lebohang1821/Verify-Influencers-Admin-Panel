@@ -6,6 +6,9 @@ import InfluencerDetails from "./components/InfluencerDetails";
 import ResearchConfig from "./components/ResearchConfig";
 import ResearchTasks from "./components/ResearchTasks";
 import Navbar from "./components/Navbar";
+import Contact from "./components/Contact"; // Import Contact component
+import About from "./components/About"; // Import About component
+import Monetization from "./components/Monetization"; // Import Monetization component
 
 function App() {
   return (
@@ -21,6 +24,9 @@ function App() {
             <Route path="/influencer/:id" component={InfluencerDetails} />
             <Route path="/research-config" component={ResearchConfig} />
             <Route path="/research-tasks" component={ResearchTasks} />
+            <Route path="/contact" component={Contact} /> {/* Add Contact route */}
+            <Route path="/about" component={About} /> {/* Add About route */}
+            <Route path="/monetization" component={Monetization} /> {/* Add Monetization route */}
           </Switch>
         </main>
       </div>
