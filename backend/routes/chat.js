@@ -108,7 +108,7 @@ router.post("/", async (req, res) => {
     const trustScore = trustScoreMatch ? parseInt(trustScoreMatch[1], 10) : 50;
 
     // Set trend based on trust score
-    const trend = trustScore >= 75 ? "Up" : "Down";
+    const trend = trustScore >= 5 ? "Up" : "Down";
 
     console.log("Extracted data:", {
       instagramFollowers,
