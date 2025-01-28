@@ -44,15 +44,12 @@ router.post("/", async (req, res) => {
   const { influencerName, claimsToAnalyze, timeRange, includeRevenueAnalysis, verifyWithJournals, scientificJournals } = req.body;
   console.log("Received request:", req.body);
 
-  const prompt = `Provide a detailed analysis for the influencer "${influencerName}" including the following information:
-  1. Total number of followers with a breakdown by platform.
-  2. Category of the influencer.
-  3. Trust score of the influencer.
-  4. Current trend of the influencer.
-  5. Analysis of ${claimsToAnalyze} claims made by the influencer.
-  6. Time range: ${timeRange}.
-  7. Include revenue analysis: ${includeRevenueAnalysis}.
-  8. Verify claims with the following journals: ${Object.keys(scientificJournals).filter(journal => scientificJournals[journal]).join(", ")}.`;
+  const prompt = `Provide the following information for the influencer "${influencerName}":
+  1. Total number of followers on Instagram.
+  2. Total number of followers on Twitter (if available).
+  3. Total number of followers on YouTube (if available).
+  4. Category of the influencer.
+  5. Trust score of the influencer.`;
 
   try {
     const content = await callPerplexityAI(prompt);
@@ -62,8 +59,8 @@ router.post("/", async (req, res) => {
     const instagramFollowersMatch = content.match(/Instagram.*?([\d,.]+)\s*(million|M|k|K)?/i);
     const twitterFollowersMatch = content.match(/Twitter.*?([\d,.]+)\s*(million|M|k|K)?/i);
     const youtubeFollowersMatch = content.match(/YouTube.*?([\d,.]+)\s*(million|M|k|K)?/i);
-    const tiktokFollowersMatch = content.match(/TikTok.*?([\d,.]+)\s*(million|M|k|K)?/i);
     const categoryMatch = content.match(/Category.*?:\s*(.*?)(?:\n|$)/i);
+    const trustScoreMatch = content.match(/Trust score.*?:\s*(\d+)/i);
 
     const instagramFollowers = instagramFollowersMatch
       ? parseFollowers(instagramFollowersMatch[1], instagramFollowersMatch[2])
@@ -74,11 +71,8 @@ router.post("/", async (req, res) => {
     const youtubeFollowers = youtubeFollowersMatch
       ? parseFollowers(youtubeFollowersMatch[1], youtubeFollowersMatch[2])
       : 0;
-    const tiktokFollowers = tiktokFollowersMatch
-      ? parseFollowers(tiktokFollowersMatch[1], tiktokFollowersMatch[2])
-      : 0;
 
-    const totalFollowers = instagramFollowers + twitterFollowers + youtubeFollowers + tiktokFollowers;
+    const totalFollowers = instagramFollowers + twitterFollowers + youtubeFollowers;
 
     let category = "Health";
     if (categoryMatch) {
@@ -90,29 +84,7 @@ router.post("/", async (req, res) => {
       });
     }
 
-    // Set trust score based on total followers
-    let trustScore;
-    if (totalFollowers > 10000000) {
-      trustScore = 95;
-    } else if (totalFollowers > 5000000) {
-      trustScore = 90;
-    } else if (totalFollowers > 1000000) {
-      trustScore = 85;
-    } else if (totalFollowers > 500000) {
-      trustScore = 80;
-    } else if (totalFollowers > 100000) {
-      trustScore = 75;
-    } else if (totalFollowers > 50000) {
-      trustScore = 70;
-    } else if (totalFollowers > 10000) {
-      trustScore = 65;
-    } else if (totalFollowers > 5000) {
-      trustScore = 60;
-    } else if (totalFollowers > 1000) {
-      trustScore = 55;
-    } else {
-      trustScore = 50;
-    }
+    const trustScore = trustScoreMatch ? parseInt(trustScoreMatch[1], 10) : 50;
 
     // Set trend based on trust score
     const trend = trustScore >= 75 ? "Up" : "Down";
@@ -121,7 +93,6 @@ router.post("/", async (req, res) => {
       instagramFollowers,
       twitterFollowers,
       youtubeFollowers,
-      tiktokFollowers,
       totalFollowers,
       category,
       trustScore,
@@ -140,8 +111,21 @@ router.post("/", async (req, res) => {
       timeRange,
       includeRevenueAnalysis,
       verifyWithJournals,
-      scientificJournals
+      scientificJournals,
     };
+
+    const summaryTable = `
+      | Category | Information |
+      |----------|-------------|
+      | **Followers** | ${validatedTotalFollowers} |
+      | **Category** | ${category} |
+      | **Trust Score** | ${trustScore} |
+      | **Current Trend** | ${trend} |
+      | **Claims Analysis** | ${claimsToAnalyze} |
+      | **Revenue** | ${includeRevenueAnalysis ? 'Included' : 'Not Included'} |
+    `;
+
+    research.summaryTable = summaryTable;
 
     const db = client.db("yourDatabaseName");
     const collection = db.collection("researches");
@@ -167,6 +151,26 @@ router.get("/leaderboard", async (req, res) => {
   } catch (error) {
     console.error("Error fetching leaderboard:", error.message);
     res.status(500).json({ error: "Error fetching leaderboard" });
+  }
+});
+
+router.get("/summary", async (req, res) => {
+  try {
+    const db = client.db("yourDatabaseName");
+    const collection = db.collection("researches");
+    const summary = await collection.aggregate([
+      {
+        $group: {
+          _id: null,
+          totalClaims: { $sum: "$claimsToAnalyze" },
+          verifiedClaims: { $sum: "$trustScore" }
+        }
+      }
+    ]).toArray();
+    res.json(summary[0]);
+  } catch (error) {
+    console.error("Error fetching summary:", error.message);
+    res.status(500).json({ error: "Error fetching summary" });
   }
 });
 
