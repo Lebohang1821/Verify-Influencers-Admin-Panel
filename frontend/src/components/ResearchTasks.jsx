@@ -209,7 +209,7 @@ const ResearchTasks = () => {
           {/* Research Configuration */}
           <div className="p-6 rounded-xl mb-6 bg-gray-50">
             <h3 className="text-2xl font-semibold mb-4 text-gray-900">Research Configuration</h3>
-            <div className="grid grid-cols-2 gap-4 mb-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
               <button
                 className={`px-4 py-6 rounded-lg font-medium transition-all border border-gray-300 ${
                   researchConfig === "Specific Influencer"
@@ -234,7 +234,7 @@ const ResearchTasks = () => {
           </div>
           {researchConfig === "Specific Influencer" && (
             <div>
-              <div className="grid grid-cols-2 gap-4 mb-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
                 {["Last Week", "Last Month", "Last Year", "All Time"].map(
                   (range) => (
                     <button
@@ -320,7 +320,7 @@ const ResearchTasks = () => {
                     </button>
                   </div>
 
-                  <div className="grid grid-cols-2 gap-4 mb-6">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
                     {Object.keys(scientificJournals).map((journal) => (
                       <label
                         key={journal}
