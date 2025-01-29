@@ -1,26 +1,28 @@
-import React, { useEffect, useState } from "react";
+import React, { useState, useEffect } from "react";
+import { FaSpinner } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import { Users, CheckCircle, TrendingUp } from "lucide-react"; // Import icons
 
 const Leaderboard = () => {
-  const [influencers, setInfluencers] = useState([]);
-  const [error, setError] = useState(null);
+  const [leaderboard, setLeaderboard] = useState([]);
+  const [loading, setLoading] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState("All");
   const [summary, setSummary] = useState({ claimsVerified: 0, averageTrustScore: 0 });
   const [sortOrder, setSortOrder] = useState("desc");
+  const [error, setError] = useState(null); // Add error state
 
   useEffect(() => {
-    const fetchInfluencers = async () => {
+    const fetchLeaderboard = async () => {
+      setLoading(true);
       try {
         const response = await fetch("http://localhost:5000/api/chat/leaderboard");
-        if (!response.ok) {
-          throw new Error(`HTTP error! Status: ${response.status}`);
-        }
         const data = await response.json();
-        setInfluencers(data);
+        setLeaderboard(data);
       } catch (error) {
-        console.error("Error fetching influencers:", error);
-        setError("Failed to fetch influencers. Please try again later.");
+        console.error("Error fetching leaderboard:", error.message);
+        setError("Failed to fetch leaderboard. Please try again later.");
+      } finally {
+        setLoading(false);
       }
     };
 
@@ -35,10 +37,11 @@ const Leaderboard = () => {
         setSummary({ claimsVerified: data.totalClaims, averageTrustScore });
       } catch (error) {
         console.error("Error fetching summary:", error);
+        setError("Failed to fetch summary. Please try again later.");
       }
     };
 
-    fetchInfluencers();
+    fetchLeaderboard();
     fetchSummary();
   }, []);
 
@@ -48,8 +51,8 @@ const Leaderboard = () => {
 
   const filteredInfluencers =
     selectedCategory === "All"
-      ? influencers
-      : influencers.filter((i) => i.category === selectedCategory);
+      ? leaderboard
+      : leaderboard.filter((i) => i.category === selectedCategory);
 
   const sortedInfluencers = [...filteredInfluencers].sort((a, b) => {
     if (sortOrder === "desc") {
@@ -63,8 +66,8 @@ const Leaderboard = () => {
     setSortOrder((prevOrder) => (prevOrder === "desc" ? "asc" : "desc"));
   };
 
-  const averageTrustScore = influencers.length > 0
-    ? (influencers.reduce((sum, influencer) => sum + influencer.trustScore, 0) / influencers.length).toFixed(1)
+  const averageTrustScore = leaderboard.length > 0
+    ? (leaderboard.reduce((sum, influencer) => sum + influencer.trustScore, 0) / leaderboard.length).toFixed(1)
     : 0;
 
   const formatFollowers = (followers) => {
@@ -89,7 +92,7 @@ const Leaderboard = () => {
           <div className="flex gap-2 sm:gap-4 text-center">
             <div className="flex flex-col items-center">
               <Users className="text-teal-500 mb-1 sm:mb-2" size={24} />
-              <h2 className="text-xl sm:text-2xl font-bold text-teal-600">{influencers.length}</h2>
+              <h2 className="text-xl sm:text-2xl font-bold text-teal-600">{leaderboard.length}</h2>
               <p className="text-gray-500 text-xs sm:text-sm">Active Influencers</p>
             </div>
             <div className="flex flex-col items-center">
@@ -105,8 +108,8 @@ const Leaderboard = () => {
           </div>
         </div>
 
-        <div className="flex justify-between items-center mb-4 sm:mb-6">
-          <div className="flex justify-center gap-1 sm:gap-2">
+        <div className="flex flex-wrap justify-between items-center mb-4 sm:mb-6">
+          <div className="flex flex-wrap justify-center gap-1 sm:gap-2">
             {["All", "Nutrition", "Fitness", "Medicine", "Mental Health"].map((category) => (
               <button
                 key={category}
@@ -129,7 +132,11 @@ const Leaderboard = () => {
           </button>
         </div>
 
-        {error ? (
+        {loading ? (
+          <div className="flex justify-center items-center">
+            <FaSpinner className="animate-spin text-teal-500 text-4xl" />
+          </div>
+        ) : error ? (
           <div className="bg-red-500 text-white p-2 sm:p-3 rounded-md text-center shadow-md text-xs sm:text-sm">{error}</div>
         ) : (
           <div className="bg-white shadow-lg rounded-lg overflow-hidden border border-gray-200">

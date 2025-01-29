@@ -106,9 +106,9 @@ router.get("/leaderboard", async (req, res) => {
     const db = client.db("yourDatabaseName");
     const collection = db.collection("researches");
     const leaderboard = await collection.find().sort({ trustScore: -1 }).toArray();
-    const filteredLeaderboard = leaderboard.map((entry) => {
+    const filteredLeaderboard = leaderboard.map((entry, index) => {
       const { influencerName, category, trustScore, trend, estimatedFollowers, verifiedClaims } = entry;
-      return { influencerName, category, trustScore, trend, estimatedFollowers, verifiedClaims };
+      return { rank: index + 1, influencerName, category, trustScore, trend, estimatedFollowers, verifiedClaims };
     });
     res.json(filteredLeaderboard);
   } catch (error) {
