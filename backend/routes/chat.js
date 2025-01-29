@@ -65,77 +65,44 @@ router.post("/", async (req, res) => {
   const { influencerName, claimsToAnalyze, timeRange, includeRevenueAnalysis, verifyWithJournals, scientificJournals, notes } = req.body;
   console.log("Received request:", req.body);
 
-  const prompt = `Provide the following information for the influencer "${influencerName}":
-  1. Total number of followers on Instagram.
-  2. Total number of followers on Twitter (if available).
-  3. Total number of followers on YouTube (if available).
-  4. Category of the influencer.
-  5. Trust score of the influencer.
-  6. Notes: ${notes}`;
+  const prompt = `Analyze and provide detailed information for the health influencer "${influencerName}":
+  1. Number of followers on all social media platforms:
+  6. Category of the influencer. Specify all relevant categories such as Health, Nutrition, Fitness, etc.
+  7. Trust Score (0-100, based on credibility, engagement, and expert reviews):  
+  - Provide a reasoning for the given trust score.
+  8. Trend Analysis (Up, Down, Stable) & Explanation:
+  - How has their influence changed over time?
+  9. Notes: ${notes}
+  Please ensure to provide the follower counts for all the platforms mentioned above.
+  Additionally, provide a brief preview paragraph about the influencer, summarizing their background, expertise, any notable achievements or recognitions including
+  and include links to prove all thats provided below:
+    1. Revenue Estimation (if applicable):  
+  - Sources of income: sponsorships, brand deals, product sales, etc.  
+  - Estimated yearly earnings (if available).  
+    2. Claims Analysis:  
+  - Analyze ${claimsToAnalyze} claims made by this influencer.  
+  - Verify claims using scientific journals: ${Object.keys(scientificJournals).filter(journal => scientificJournals[journal]).join(", ")}.
+    3. Sources & Verification:  
+  - Prioritize official social media profiles, verified reports, and peer-reviewed journals.  
+  - If data is unavailable, state "No verifiable information found."`;
 
   try {
-    const content = await callPerplexityAI(prompt);
+    let content = await callPerplexityAI(prompt);
 
     console.log("Extracted content:", content);
 
-    const instagramFollowersMatch = content.match(/Instagram.*?([\d,.]+)\s*(million|M|k|K)?/i);
-    const twitterFollowersMatch = content.match(/Twitter.*?([\d,.]+)\s*(million|M|k|K)?/i);
-    const youtubeFollowersMatch = content.match(/YouTube.*?([\d,.]+)\s*(million|M|k|K)?/i);
-    const categoryMatch = content.match(/Category.*?:\s*(.*?)(?:\n|$)/i);
-    const trustScoreMatch = content.match(/Trust score.*?:\s*(\d+)/i);
-
-    const instagramFollowers = instagramFollowersMatch
-      ? parseFollowers(instagramFollowersMatch[1], instagramFollowersMatch[2])
-      : 0;
-    const twitterFollowers = twitterFollowersMatch
-      ? parseFollowers(twitterFollowersMatch[1], twitterFollowersMatch[2])
-      : 0;
-    const youtubeFollowers = youtubeFollowersMatch
-      ? parseFollowers(youtubeFollowersMatch[1], youtubeFollowersMatch[2])
-      : 0;
-
-    const totalFollowers = instagramFollowers + twitterFollowers + youtubeFollowers;
-
-    let category = "Health";
-    if (categoryMatch) {
-      const additionalCategories = ["nutrition", "fitness", "medicine", "mental health"];
-      additionalCategories.forEach((cat) => {
-        if (categoryMatch[1].toLowerCase().includes(cat)) {
-          category += `, ${cat.charAt(0).toUpperCase() + cat.slice(1)}`;
-        }
-      });
-    }
-
-    const trustScore = trustScoreMatch ? parseInt(trustScoreMatch[1], 10) : 50;
-
-    // Set trend based on trust score
-    const trend = trustScore >= 5 ? "Up" : "Down";
-
-    console.log("Extracted data:", {
-      instagramFollowers,
-      twitterFollowers,
-      youtubeFollowers,
-      totalFollowers,
-      category,
-      trustScore,
-      trend,
-    });
-
-    const validatedTotalFollowers = isNaN(totalFollowers) ? 0 : totalFollowers;
+    // Remove ** and # characters
+    content = content.replace(/\*\*/g, '').replace(/#/g, '');
 
     const research = {
       influencerName,
-      category,
-      trustScore,
-      trend,
-      estimatedFollowers: validatedTotalFollowers,
       claimsToAnalyze,
       timeRange,
       includeRevenueAnalysis,
       verifyWithJournals,
       scientificJournals,
       notes,
-      verifiedClaims: claimsToAnalyze // Use claimsToAnalyze for verifiedClaims
+      fullContent: content // Store the full content as received
     };
 
     const db = client.db("yourDatabaseName");
@@ -144,7 +111,7 @@ router.post("/", async (req, res) => {
       writeConcern: { w: 'majority', j: true, wtimeout: 5000 }
     });
 
-    res.json(research);
+    res.json({ ...research, fullContent: content }); // Return the full content in the response
   } catch (error) {
     console.error("Error communicating with Perplexity:", error.response ? error.response.data : error.message);
     res.status(error.response ? error.response.status : 500).json({
@@ -198,20 +165,5 @@ router.get("/summary", async (req, res) => {
     res.status(500).json({ error: "Error fetching summary" });
   }
 });
-
-function parseFollowers(followersString, unit) {
-  if (!followersString) return 0;
-  let followers = parseFloat(followersString.replace(/[^\d.]/g, ""));
-  if (isNaN(followers)) return 0;
-  if (unit) {
-    unit = unit.toLowerCase();
-    if (unit === "million" || unit === "m") {
-      followers *= 1e6;
-    } else if (unit === "k") {
-      followers *= 1e3;
-    }
-  }
-  return followers;
-}
 
 module.exports = router;

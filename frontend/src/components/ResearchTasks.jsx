@@ -107,6 +107,8 @@ const ResearchTasks = () => {
       verifyWithJournals,
       scientificJournals,
       notes,
+      includeFacebookFollowers: true, // Add this line
+      includeTikTokFollowers: true, // Add this line
     };
 
     try {
@@ -385,16 +387,8 @@ const ResearchTasks = () => {
                 Research Results
               </h2>
               <div className="text-gray-800 whitespace-pre-wrap">
-                <p><strong>Influencer Name:</strong> {researchResults.influencerName}</p>
-                <p><strong>Category:</strong> {researchResults.category}</p>
-                <p><strong>Trust Score:</strong> {researchResults.trustScore}</p>
-                <p><strong>Trend:</strong> {researchResults.trend}</p>
-                <p><strong>Estimated Followers:</strong> {researchResults.estimatedFollowers}</p>
-                <p><strong>Claims to Analyze:</strong> {researchResults.claimsToAnalyze}</p>
-                <p><strong>Time Range:</strong> {researchResults.timeRange}</p>
-                <p><strong>Include Revenue Analysis:</strong> {researchResults.includeRevenueAnalysis ? 'Yes' : 'No'}</p>
-                <p><strong>Verify with Journals:</strong> {researchResults.verifyWithJournals ? 'Yes' : 'No'}</p>
-                <p><strong>Scientific Journals:</strong> {Object.keys(researchResults.scientificJournals).filter(journal => researchResults.scientificJournals[journal]).join(", ")}</p>
+                <p>{researchResults.previewParagraph}</p> {/* Show extracted content as it is */}
+                <p>{researchResults.fullContent.replace(/[*#]/g, '')}</p> {/* Show full content without ** and # */}
               </div>
             </div>
           )}
