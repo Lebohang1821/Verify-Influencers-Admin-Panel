@@ -23,7 +23,6 @@ const influencersRouter = require("./routes/influencers");
 const claimsRouter = require("./routes/claims");
 const verifyRouter = require("./routes/verify");
 const chatRouter = require("./routes/chat");
-const twitterRouter = require('./routes/twitter');
 const searchResultsRouter = require('./routes/searchResults');
 const summaryRouter = require('./routes/summary');
 
