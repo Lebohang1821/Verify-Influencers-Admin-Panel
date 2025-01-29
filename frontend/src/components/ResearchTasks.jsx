@@ -173,7 +173,7 @@ const ResearchTasks = () => {
       Swal.fire({
         icon: 'success',
         title: 'Success',
-        text: 'Influencer details saved successfully!',
+        text: 'Influencer details saved successfully! And saved to Leaderboard.',
       });
 
       setShowAddForm(false);
