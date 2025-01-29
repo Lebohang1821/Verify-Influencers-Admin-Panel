@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { FaSpinner } from "react-icons/fa";
+import Swal from "sweetalert2"; // Import SweetAlert2 for nice popups
+import AddInfluencerForm from "./AddInfluencerForm"; // Import AddInfluencerForm
 
 const ResearchTasks = () => {
   const [influencerName, setInfluencerName] = useState("");
@@ -26,6 +28,20 @@ const ResearchTasks = () => {
   const [researchConfig, setResearchConfig] = useState("");
   const [newInfluencers, setNewInfluencers] = useState([]);
   const [notes, setNotes] = useState("");
+  const [showAddForm, setShowAddForm] = useState(false);
+  const [newInfluencerDetails, setNewInfluencerDetails] = useState({
+    influencerName: "",
+    category: "",
+    trustScore: "",
+    trend: "",
+    estimatedFollowers: "",
+    claimsToAnalyze: "",
+    timeRange: "",
+    includeRevenueAnalysis: false,
+    verifyWithJournals: false,
+    scientificJournals: {},
+    verifiedClaims: "",
+  });
 
   useEffect(() => {
     if (researchConfig === "Discover New") {
@@ -46,7 +62,7 @@ const ResearchTasks = () => {
         headers: { "Content-Type": "application/json" },
       });
       const data = await response.json();
-      setNewInfluencers(data.influencers || []);
+      setNewInfluencers(Array.isArray(data.influencers) ? data.influencers : []);
     } catch (error) {
       console.error("Error fetching new influencers:", error.message);
       setError("Failed to fetch new influencers. Please try again later.");
@@ -131,6 +147,52 @@ const ResearchTasks = () => {
       setError(error.message);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleSaveInfluencer = async () => {
+    if (!newInfluencerDetails.influencerName.trim()) {
+      setError("Influencer name is required.");
+      return;
+    }
+
+    try {
+      const response = await fetch("http://localhost:5000/api/influencers", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(newInfluencerDetails),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(
+          errorData.error || `Failed with status code ${response.status}`
+        );
+      }
+
+      Swal.fire({
+        icon: 'success',
+        title: 'Success',
+        text: 'Influencer details saved successfully!',
+      });
+
+      setShowAddForm(false);
+      setNewInfluencerDetails({
+        influencerName: "",
+        category: "",
+        trustScore: "",
+        trend: "",
+        estimatedFollowers: "",
+        claimsToAnalyze: "",
+        timeRange: "",
+        includeRevenueAnalysis: false,
+        verifyWithJournals: false,
+        scientificJournals: {},
+        verifiedClaims: "",
+      });
+    } catch (error) {
+      console.error("Error saving influencer details:", error.message);
+      setError("Failed to save influencer details. Please try again later.");
     }
   };
 
@@ -376,7 +438,7 @@ const ResearchTasks = () => {
               </div>
             </div>
           )}
-          {error && (
+          {error && !showAddForm && (
             <div className="bg-red-100 text-red-800 p-4 rounded-lg mt-4">
               {error}
             </div>
@@ -392,6 +454,34 @@ const ResearchTasks = () => {
               </div>
             </div>
           )}
+          {newInfluencers.length > 0 && researchConfig === "Discover New" && (
+            <div className="bg-white shadow-lg rounded-lg p-6 mt-6">
+              <h2 className="text-xl font-bold text-gray-900 mb-4">
+                New Influencers
+              </h2>
+              <ul className="list-disc list-inside text-gray-800">
+                {newInfluencers.map((influencer, index) => (
+                  <li key={index}>{influencer}</li>
+                ))}
+              </ul>
+            </div>
+          )}
+          <div className="mt-6">
+            <button
+              className="bg-teal-600 text-white py-2 px-4 rounded-lg hover:bg-teal-700 transition duration-300 mb-4"
+              onClick={() => setShowAddForm(!showAddForm)}
+            >
+              {showAddForm ? "Cancel" : "Add New Influencer"}
+            </button>
+            {showAddForm && (
+              <AddInfluencerForm
+                newInfluencerDetails={newInfluencerDetails}
+                setNewInfluencerDetails={setNewInfluencerDetails}
+                handleSaveInfluencer={handleSaveInfluencer}
+                error={error}
+              />
+            )}
+          </div>
         </div>
       </div>
     </div>

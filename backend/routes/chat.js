@@ -6,11 +6,10 @@ require("dotenv").config();
 
 const PERPLEXITY_API_KEY = process.env.PERPLEXITY_API_KEY;
 const MONGODB_URI = process.env.MONGODB_URI;
-const AI1_API_KEY = process.env.AI1_API_KEY;
 
 const client = new MongoClient(MONGODB_URI, {
-  useUnifiedTopology: true, // Use the new engine
-  useNewUrlParser: true, // Use the new URL parser
+  useUnifiedTopology: true,
+  useNewUrlParser: true,
 });
 
 client.connect()
@@ -38,27 +37,16 @@ async function callPerplexityAI(promptText) {
     throw new Error("Invalid data received from Perplexity AI");
   }
 
-  return response.data.choices[0].message.content;
+  return response.data.choices[0].message.content.replace(/[*#]/g, ''); // Remove ** and ## characters
 }
 
 async function callAIForNewInfluencers() {
-  const response = await axios.post(
-    "https://api.perplexity.ai/chat/completions",
-    {
-      model: "sonar",
-      messages: [{ role: "user", content: "List 10 new health influencers." }],
-    },
-    {
-      headers: { Authorization: `Bearer ${AI1_API_KEY}` },
-    }
-  );
-
-  if (!response.data || !response.data.choices || !response.data.choices[0]) {
-    console.error("Invalid data received from AI:", response.data);
-    throw new Error("Invalid data received from AI");
-  }
-
-  return response.data.choices[0].message.content.split("\n").map(line => line.trim()).filter(line => line);
+  const prompt = `Provide a list of new 10 health influencers to analyze:
+                -Social followers in one number:
+                -Categories:
+                -Trust Score`;
+  const response = await callPerplexityAI(prompt);
+  return response.split("\n").filter(influencer => influencer.trim() !== "");
 }
 
 router.post("/", async (req, res) => {
@@ -92,26 +80,9 @@ router.post("/", async (req, res) => {
     console.log("Extracted content:", content);
 
     // Remove ** and # characters
-    content = content.replace(/\*\*/g, '').replace(/#/g, '');
+    content = content.replace(/[*#]/g, '');
 
-    const research = {
-      influencerName,
-      claimsToAnalyze,
-      timeRange,
-      includeRevenueAnalysis,
-      verifyWithJournals,
-      scientificJournals,
-      notes,
-      fullContent: content // Store the full content as received
-    };
-
-    const db = client.db("yourDatabaseName");
-    const collection = db.collection("researches");
-    await collection.insertOne(research, {
-      writeConcern: { w: 'majority', j: true, wtimeout: 5000 }
-    });
-
-    res.json({ ...research, fullContent: content }); // Return the full content in the response
+    res.json({ fullContent: content }); // Return the full content in the response
   } catch (error) {
     console.error("Error communicating with Perplexity:", error.response ? error.response.data : error.message);
     res.status(error.response ? error.response.status : 500).json({
@@ -154,6 +125,7 @@ router.get("/summary", async (req, res) => {
       {
         $group: {
           _id: null,
+          totalInfluencers: { $sum: 1 },
           totalClaims: { $sum: "$claimsToAnalyze" },
           verifiedClaims: { $sum: "$verifiedClaims" }
         }
@@ -161,8 +133,7 @@ router.get("/summary", async (req, res) => {
     ]).toArray();
     res.json(summary[0]);
   } catch (error) {
-    console.error("Error fetching summary:", error.message);
-    res.status(500).json({ error: "Error fetching summary" });
+    res.status(500).json({ error: `Error fetching summary: ${error.message}` });
   }
 });
 

@@ -25,6 +25,7 @@ const verifyRouter = require("./routes/verify");
 const chatRouter = require("./routes/chat");
 const twitterRouter = require('./routes/twitter');
 const searchResultsRouter = require('./routes/searchResults');
+const summaryRouter = require('./routes/summary');
 
 app.use("/api/influencers", influencersRouter);
 app.use("/api/claims", claimsRouter);
@@ -32,15 +33,7 @@ app.use("/api/verify", verifyRouter);
 app.use('/api/chat', chatRouter);
 app.use('/api/twitter', twitterRouter);
 app.use('/api/search-results', searchResultsRouter);
-
-// Dummy route for summary data
-app.get("/api/summary", (req, res) => {
-  res.json({
-    totalInfluencers: 10,
-    totalClaims: 50,
-    verifiedClaims: 35,
-  });
-});
+app.use('/api/summary', summaryRouter);
 
 app.listen(port, () => {
   console.log(`Server is running on http://localhost:${port}`);

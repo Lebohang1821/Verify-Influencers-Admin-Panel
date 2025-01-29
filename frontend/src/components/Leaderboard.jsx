@@ -67,6 +67,16 @@ const Leaderboard = () => {
     ? (influencers.reduce((sum, influencer) => sum + influencer.trustScore, 0) / influencers.length).toFixed(1)
     : 0;
 
+  const formatFollowers = (followers) => {
+    if (followers >= 1000000) {
+      return (followers / 1000000).toFixed(1) + "M";
+    } else if (followers >= 1000) {
+      return (followers / 1000).toFixed(1) + "K";
+    } else {
+      return followers.toString();
+    }
+  };
+
   return (
     <div className="bg-gradient-to-b from-green-50 to-green-100 min-h-screen p-4 sm:p-6">
       <div className="max-w-4xl mx-auto">
@@ -154,7 +164,7 @@ const Leaderboard = () => {
                     <td className="py-2 sm:py-3 px-2 sm:px-4 text-green-500">
                       {influencer.trend === "Up" ? "▲" : <span className="text-red-500">▼</span>}
                     </td>
-                    <td className="py-2 sm:py-3 px-2 sm:px-4 text-gray-600">{influencer.estimatedFollowers}</td>
+                    <td className="py-2 sm:py-3 px-2 sm:px-4 text-gray-600">{formatFollowers(influencer.estimatedFollowers)}</td>
                     <td className="py-2 sm:py-3 px-2 sm:px-4 text-gray-600">{influencer.verifiedClaims}</td>
                   </tr>
                 ))}
