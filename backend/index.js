@@ -30,7 +30,6 @@ app.use("/api/influencers", influencersRouter);
 app.use("/api/claims", claimsRouter);
 app.use("/api/verify", verifyRouter);
 app.use('/api/chat', chatRouter);
-app.use('/api/twitter', twitterRouter);
 app.use('/api/search-results', searchResultsRouter);
 app.use('/api/summary', summaryRouter);
 
