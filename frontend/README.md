@@ -39,7 +39,7 @@ This project is the frontend for the Verify Influencers Admin Panel. It is built
 
 ## API Endpoints
 
-The frontend communicates with the backend API hosted at `https://verify-influencers-admin-panel.onrender.com`. Below are the main API endpoints used:
+The frontend communicates with the backend API hosted at ``. Below are the main API endpoints used:
 
 - `GET /api/influencers`: Fetch all influencers.
 - `POST /api/influencers`: Add a new influencer.
@@ -101,7 +101,7 @@ To deploy the frontend application, follow these steps:
 The frontend application does not require any environment variables. However, ensure that the backend API URL is correctly set in the `src/services/api.js` file:
 
 ```javascript
-const API_BASE_URL = 'https://verify-influencers-admin-panel.onrender.com';
+const API_BASE_URL = '';
 ```
 
 ## License
