@@ -57,7 +57,7 @@ const ResearchTasks = () => {
   const fetchNewInfluencers = async () => {
     setLoading(true);
     try {
-      const response = await fetch("http://localhost:5000/api/chat/new-influencers", {
+      const response = await fetch("https://verify-influencers-admin-panel.onrender.com/api/chat/new-influencers", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
       });
@@ -128,7 +128,7 @@ const ResearchTasks = () => {
     };
 
     try {
-      const response = await fetch("http://localhost:5000/api/chat", {
+      const response = await fetch("https://verify-influencers-admin-panel.onrender.com/api/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(requestData),
@@ -157,7 +157,7 @@ const ResearchTasks = () => {
     }
 
     try {
-      const response = await fetch("http://localhost:5000/api/influencers", {
+      const response = await fetch("https://verify-influencers-admin-panel.onrender.com/api/influencers", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(newInfluencerDetails),
