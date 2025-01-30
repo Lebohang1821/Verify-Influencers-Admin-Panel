@@ -25,5 +25,8 @@ module.exports = {
       },
     },
   },
+  variants: {
+    // Add your variants here
+  },
   plugins: [],
 };
