@@ -1,6 +1,7 @@
 {
   "name": "verify-influencers-frontend",
   "version": "1.0.0",
+  "private": true,
   "main": "index.js",
   "scripts": {
     "start": "react-scripts start",
@@ -18,8 +19,8 @@
     "react-dom": "^17.0.2",
     "react-icons": "^5.4.0",
     "react-router-dom": "^5.2.0",
-    "react-scripts": "^5.0.1",
-    "sweetalert2": "^11.15.10"
+    "react-scripts": "4.0.3",
+    "sweetalert2": "^11.1.9"
   },
   "browserslist": {
     "production": [
@@ -40,5 +41,11 @@
     "postcss-flexbugs-fixes": "^5.0.2",
     "postcss-preset-env": "^7.0.39",
     "tailwindcss": "npm:@tailwindcss/postcss7-compat@^2.2.17"
+  },
+  "eslintConfig": {
+    "extends": [
+      "react-app",
+      "react-app/jest"
+    ]
   }
 }

@@ -13,7 +13,7 @@ const ResearchTasks = () => {
   const [researchResults, setResearchResults] = useState(null);
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
-  const [tweets, setTweets] = useState([]);
+  // Remove the unused variables 'tweets' and 'setTweets'
   const [scientificJournals, setScientificJournals] = useState({
     "Pubmed Central": false,
     "Nature": false,

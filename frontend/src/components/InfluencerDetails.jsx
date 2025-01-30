@@ -1,11 +1,36 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
+import axios from "axios";
 import { Search, BarChart, DollarSign, User, Package } from "lucide-react";
 import profileImage from "./pictures/images.jpg"; // Import the image
 
 const InfluencerDetails = () => {
   const { id } = useParams();
   const [activeTab, setActiveTab] = useState("claims");
+  const [influencer, setInfluencer] = useState(null);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    async function fetchInfluencer() {
+      try {
+        const response = await axios.get(`https://verify-influencers-admin-panel.vercel.app/api/influencers/${id}`);
+        setInfluencer(response.data);
+      } catch (error) {
+        console.error("Error fetching influencer details:", error);
+        setError(error.message);
+      }
+    }
+
+    fetchInfluencer();
+  }, [id]);
+
+  if (error) {
+    return <div className="bg-red-100 text-red-800 p-4 rounded-lg">{error}</div>;
+  }
+
+  if (!influencer) {
+    return <div>Loading...</div>;
+  }
 
   return (
     <div className="bg-gradient-to-b from-green-50 to-green-100 min-h-screen p-4 sm:p-6">
@@ -18,8 +43,8 @@ const InfluencerDetails = () => {
             className="rounded-full w-20 h-20 border-2 border-teal-500 mb-4 sm:mb-0"
           />
           <div className="text-center sm:text-left">
-            <h1 className="text-2xl font-bold text-gray-900">Michelle Lewin</h1>
-            <p className="text-gray-600">Health, Fitness</p>
+            <h1 className="text-2xl font-bold text-gray-900">{influencer.name}</h1>
+            <p className="text-gray-600">{influencer.description}</p>
           </div>
         </div>
 

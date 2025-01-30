@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { User, CheckCircle, Search, Menu, X } from "lucide-react";
+import { User, CheckCircle, Menu, X } from "lucide-react";
 import { Link, useLocation } from "react-router-dom";
 
 const Navbar = () => {
