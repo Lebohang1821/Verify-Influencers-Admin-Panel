@@ -2,7 +2,7 @@
   "name": "verify-influencers-frontend",
   "version": "1.0.0",
   "main": "index.js",
-  "homepage": ".",
+  "homepage": "https://verify-influencers-admin.vercel.app",
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
