@@ -2,6 +2,7 @@
   "name": "verify-influencers-frontend",
   "version": "1.0.0",
   "main": "index.js",
+  "homepage": ".",
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
