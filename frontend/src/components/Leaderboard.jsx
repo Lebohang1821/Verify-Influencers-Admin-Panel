@@ -15,7 +15,7 @@ const Leaderboard = () => {
     const fetchLeaderboard = async () => {
       setLoading(true);
       try {
-        const response = await fetch("https://verify-influencers-admin-panel.onrender.com/api/chat/leaderboard");
+        const response = await fetch("https://verify-influencers-admin-panel.vercel.app/api/chat/leaderboard");
         const data = await response.json();
         setLeaderboard(data);
       } catch (error) {
@@ -28,7 +28,7 @@ const Leaderboard = () => {
 
     const fetchSummary = async () => {
       try {
-        const response = await fetch("https://verify-influencers-admin-panel.onrender.com/api/chat/summary");
+        const response = await fetch("https://verify-influencers-admin-panel.vercel.app/api/chat/summary");
         if (!response.ok) {
           throw new Error(`HTTP error! Status: ${response.status}`);
         }

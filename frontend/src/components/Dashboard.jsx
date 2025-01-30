@@ -12,7 +12,7 @@ function Dashboard() {
   useEffect(() => {
     async function fetchSummary() {
       try {
-        const response = await axios.get("https://verify-influencers-admin-panel.onrender.com/api/chat/summary");
+        const response = await axios.get("https://verify-influencers-admin-panel.vercel.app/api/chat/summary");
         setSummary(response.data);
       } catch (error) {
         console.error("Error fetching summary data:", error);
@@ -22,7 +22,7 @@ function Dashboard() {
 
     async function fetchInfluencers() {
       try {
-        const response = await axios.get("https://verify-influencers-admin-panel.onrender.com/api/chat/leaderboard");
+        const response = await axios.get("https://verify-influencers-admin-panel.vercel.app/api/chat/leaderboard");
         setInfluencers(response.data);
       } catch (error) {
         console.error("Error fetching influencers:", error);

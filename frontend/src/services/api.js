@@ -1,4 +1,4 @@
-const API_BASE_URL = 'https://verify-influencers-admin-panel.onrender.com';
+const API_BASE_URL = 'https://verify-influencers-admin-panel.vercel.app';
 
 export const fetchInfluencers = async () => {
   const response = await fetch(`${API_BASE_URL}/api/influencers`);
