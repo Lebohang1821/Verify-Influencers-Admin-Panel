@@ -7,7 +7,7 @@ const app = express();
 const port = process.env.PORT || 5000;
 
 app.use(cors({
-  origin: 'https://verify-influencers-admin.vercel.app/', // Adjust this to match your frontend URL
+  origin: 'https://verify-influencers-admin.vercel.app', // Adjust this to match your frontend URL
   methods: ['GET', 'POST', 'PUT', 'DELETE'],
   allowedHeaders: ['Content-Type', 'Authorization']
 }));
