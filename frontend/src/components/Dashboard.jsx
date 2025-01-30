@@ -22,7 +22,7 @@ function Dashboard() {
 
     async function fetchInfluencers() {
       try {
-        const response = await axios.get("https://verify-influencers-admin-panel.vercel.app/api/chat/leaderboard");
+        const response = await axios.get("https://verify-influencers-admin-panel.onrender.com/api/chat/leaderboard");
         setInfluencers(response.data);
       } catch (error) {
         console.error("Error fetching influencers:", error);
