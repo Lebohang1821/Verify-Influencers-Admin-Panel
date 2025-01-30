@@ -1,11 +1,7 @@
 /** @type {import('tailwindcss').Config} */
 module.exports = {
   content: [
-    './src/**/*.html',
-    './src/**/*.js',
-    './src/**/*.jsx',
-    './src/**/*.ts',
-    './src/**/*.tsx',
+    "./src/**/*.{js,jsx,ts,tsx}",
   ],
   darkMode: 'class', // Enable dark mode
   theme: {
@@ -21,9 +17,6 @@ module.exports = {
         borderGray: '#374151',
       },
     },
-  },
-  variants: {
-    // Add your variants here
   },
   plugins: [],
 };
