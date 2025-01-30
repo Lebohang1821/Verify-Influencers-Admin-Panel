@@ -2,7 +2,6 @@
   "name": "verify-influencers-frontend",
   "version": "1.0.0",
   "main": "index.js",
-  "homepage": "https://verify-influencers-admin.vercel.app",
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
@@ -40,7 +39,6 @@
     "postcss": "^8.4.14",
     "postcss-flexbugs-fixes": "^5.0.2",
     "postcss-preset-env": "^7.0.39",
-    "tailwindcss": "npm:@tailwindcss/postcss7-compat@^2.2.17",
     "@babel/plugin-proposal-private-property-in-object": "^7.14.5",
     "eslint-config-react-app": "^7.0.1"
   },
