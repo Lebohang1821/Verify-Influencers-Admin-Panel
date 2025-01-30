@@ -16,6 +16,10 @@
       "dest": "/build/static/$1"
     },
     {
+      "src": "/api/(.*)",
+      "dest": "https://verify-influencers-admin-panel.vercel.app/api/$1"
+    },
+    {
       "src": "/(.*)",
       "dest": "/build/index.html"
     }
